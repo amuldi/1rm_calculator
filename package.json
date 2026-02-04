@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "prebuild": "chmod +x ./node_modules/.bin/vite",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
@@ -38,7 +37,7 @@
     "vite-plugin-pwa": "^1.0.0"
   },
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "repository": {
     "type": "git",
