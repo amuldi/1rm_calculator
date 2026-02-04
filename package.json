@@ -42,14 +42,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/amuldi/1rm 계산기"
+    "url": "https://github.com/amuldi/1rm_calculator"
   },
   "bugs": {
-    "url": "https://github.com/amuldi/1rm 계산기/issues"
+    "url": "https://github.com/amuldi/1rm_calculator/issues"
   },
-  "homepage": "https://1rm 계산기.vercel.app",
+  "homepage": "https://1rm_calculator.vercel.app",
   "license": "ISC",
-  "description": "1rm 계산기 | 1RM 계산과 Zone 분석을 위한 운동 분석 웹앱",
+  "description": "1rm_calculator | 1RM 계산과 Zone 분석을 위한 운동 분석 웹앱",
   "keywords": [
     "react",
     "vite",
