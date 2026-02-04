@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://suren-pi.vercel.app/sitemap.xml
+Sitemap: https://ondura.vercel.app/sitemap.xml

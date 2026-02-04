@@ -9,6 +9,7 @@ import {
 import Dashboard from "./pages/Dashboard";
 import OneRM from "./pages/OneRM";
 import Insight from "./pages/Insight";
+import Explore from "./pages/Explore";
 import SplashScreen from "./SplashScreen";
 import BottomNav from "./BottomNav";
 
@@ -35,6 +36,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/one-rm" element={<OneRM />} />
         <Route path="/insight" element={<Insight />} />
+        <Route path="/explore" element={<Explore />} />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </>

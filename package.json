@@ -1,5 +1,5 @@
 {
-  "name": "SU'REN",
+  "name": "1RM 계산기",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -16,6 +16,7 @@
     "animate.css": "^4.1.1",
     "chart.js": "^4.4.0",
     "chartjs-plugin-annotation": "^3.1.0",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "date-fns": "^4.1.0",
     "keen-slider": "^6.8.6",
     "lucide-react": "^0.507.0",
@@ -41,14 +42,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/amuldi/REPMAXproject"
+    "url": "https://github.com/amuldi/1rm 계산기"
   },
   "bugs": {
-    "url": "https://github.com/amuldi/REPMAXproject/issues"
+    "url": "https://github.com/amuldi/1rm 계산기/issues"
   },
-  "homepage": "https://repmaxproject.vercel.app",
+  "homepage": "https://1rm 계산기.vercel.app",
   "license": "ISC",
-  "description": "REPMAX | 1RM 계산과 Zone 분석을 위한 운동 분석 웹앱",
+  "description": "1rm 계산기 | 1RM 계산과 Zone 분석을 위한 운동 분석 웹앱",
   "keywords": [
     "react",
     "vite",

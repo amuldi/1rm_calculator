@@ -8,7 +8,6 @@ function SplashScreen() {
     >
       <img
         src="/apple-touch-icon.png"
-        alt="SU'REN Logo"
         className="w-48 h-48" // 192px × 192px
       />
     </div>

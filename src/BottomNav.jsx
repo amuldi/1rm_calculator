@@ -1,11 +1,12 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, BarChart2, Activity, TrendingUp } from "lucide-react";
+import { Home, BarChart2, Activity, TrendingUp, Search } from "lucide-react";
 
 const tabs = [
-  { name: "Dashboard", path: "/dashboard", icon: <Home size={20} /> },
-  { name: "1RM", path: "/one-rm", icon: <BarChart2 size={20} /> },
-  { name: "Insights", path: "/insight", icon: <TrendingUp size={20} /> },
+  { name: "대시보드", path: "/dashboard", icon: <Home size={20} /> },
+  { name: "1RM 계산기", path: "/one-rm", icon: <BarChart2 size={20} /> },
+  { name: "운동 분석", path: "/insight", icon: <TrendingUp size={20} /> },
+  { name: "운동 탐색", path: "/explore", icon: <Search size={20} /> },
 ];
 
 function BottomNav() {
@@ -20,14 +21,14 @@ function BottomNav() {
           <button
             key={tab.path}
             onClick={() => navigate(tab.path)}
-            className={`flex flex-col items-center text-xs sm:text-sm transition-all ${
+            className={`flex flex-col items-center justify-center text-xs sm:text-sm px-4 py-1 rounded-lg transition-all duration-200 ${
               isActive
-                ? "text-black-600 dark:text-white-400 font-semibold"
-                : "text-gray-500 dark:text-gray-400"
+                ? "text-black dark:text-white font-bold"
+                : "text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"
             }`}
           >
-            {tab.icon}
-            <span className="mt-1">{tab.name}</span>
+            {React.cloneElement(tab.icon, { size: 24 })}
+            <span className="mt-1 font-semibold">{tab.name}</span>
           </button>
         );
       })}
