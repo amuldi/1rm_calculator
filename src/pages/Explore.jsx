@@ -21,6 +21,12 @@ export default function Explore() {
   );
   const [isFocused, setIsFocused] = useState(false);
 
+  const deleteKeyword = (word) => {
+    const updated = recentKeywords.filter((k) => k !== word);
+    setRecentKeywords(updated);
+    localStorage.setItem("recentKeywords", JSON.stringify(updated));
+  };
+
   const handleSearch = async (customQuery) => {
     const base = customQuery || query;
     const searchTerm = `운동 ${base}`;
@@ -124,15 +130,28 @@ export default function Explore() {
               {recentKeywords.map((word, i) => (
                 <li
                   key={i}
-                  onClick={() => {
-                    setQuery(word);
-                    handleSearch();
-                    setIsFocused(false);
-                  }}
-                  className="flex items-center gap-2 px-4 py-3 text-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-[#2a2a2a] transition"
+                  className="flex items-center justify-between px-4 py-3 text-sm hover:bg-gray-50 dark:hover:bg-[#2a2a2a] transition"
                 >
-                  <span className="text-gray-400 dark:text-gray-500">⟳</span>
-                  <span className="text-gray-800 dark:text-gray-200">{word}</span>
+                  <span
+                    onClick={() => {
+                      setQuery(word);
+                      handleSearch(word);
+                      setIsFocused(false);
+                    }}
+                    className="cursor-pointer text-gray-800 dark:text-gray-200"
+                  >
+                    {word}
+                  </span>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteKeyword(word);
+                    }}
+                    className="text-gray-400 hover:text-red-500 transition text-xs"
+                  >
+                    삭제
+                  </button>
                 </li>
               ))}
             </ul>

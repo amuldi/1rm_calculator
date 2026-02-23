@@ -1,6 +1,6 @@
 {
-  "name": "SU'REN",
-  "short_name": "SU'REN",
+  "name": "1rm_calculator",
+  "short_name": "1rm",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
