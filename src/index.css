@@ -1,17 +1,200 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@keyframes fade-in {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+
+@layer base {
+  :root {
+    --accent:        #00C8FF;
+    --accent-border: rgba(0, 200, 255, 0.20);
+    --accent-faint:  rgba(0, 200, 255, 0.08);
+    --accent-glow:   rgba(0, 200, 255, 0.30);
+    --bg:            #060912;
+    --surface:       #0c1120;
+    --card:          #101828;
+    --card-2:        #162032;
+    --text-1:        #ddeeff;
+    --text-2:        #5a7a9a;
+    --text-3:        #354d65;
+    --border:        rgba(0, 200, 255, 0.10);
+    --border-subtle: rgba(255, 255, 255, 0.05);
+    --red:           #f87171;
+    --red-border:    rgba(248, 113, 113, 0.25);
+    --red-faint:     rgba(248, 113, 113, 0.08);
+  }
+
+  html.light {
+    --bg:      #f0f6ff;
+    --surface: #e4eef8;
+    --card:    #ffffff;
+    --text-1:  #0f1a2a;
+    --text-2:  #4a6d8c;
+    --text-3:  #8aaccc;
+    --border:  rgba(0, 150, 200, 0.15);
+    --border-subtle: rgba(0, 0, 0, 0.06);
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "Pretendard", "DM Sans", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background-color: var(--bg);
+    color: var(--text-1);
+    overflow-x: hidden;
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 }
 
-.animate-fade-in {
-  animation: fade-in 0.6s ease-out forwards;
+@layer components {
+  /* ── Card ─────────────────────────────────────── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+  }
+
+  .card-accent {
+    background: var(--card);
+    border: 1px solid var(--accent-border);
+    border-radius: 16px;
+    box-shadow: 0 0 24px var(--accent-faint);
+  }
+
+  /* ── Buttons ─────────────────────────────────── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2
+           font-semibold tracking-wide transition-all duration-200
+           select-none disabled:opacity-40 disabled:pointer-events-none;
+    border-radius: 10px;
+  }
+
+  .btn-accent {
+    @apply btn;
+    background: var(--accent);
+    color: #060912;
+    font-weight: 800;
+  }
+  .btn-accent:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 0 24px var(--accent-glow);
+  }
+  .btn-accent:active { transform: scale(0.97); }
+
+  .btn-ghost {
+    @apply btn;
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-1);
+  }
+  .btn-ghost:hover {
+    border-color: var(--accent-border);
+    color: var(--accent);
+    background: var(--accent-faint);
+  }
+  .btn-ghost:active { transform: scale(0.97); }
+
+  .btn-danger {
+    @apply btn;
+    background: var(--red-faint);
+    border: 1px solid var(--red-border);
+    color: var(--red);
+  }
+  .btn-danger:hover  { background: rgba(248,113,113,0.14); }
+  .btn-danger:active { transform: scale(0.97); }
+
+  /* ── Field ───────────────────────────────────── */
+  .field {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    font-family: "Pretendard", sans-serif;
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    color: var(--text-1);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field::placeholder { color: var(--text-3); }
+  .field:focus {
+    border-color: var(--accent-border);
+    box-shadow: 0 0 0 3px var(--accent-faint);
+  }
+
+  /* ── Labels ──────────────────────────────────── */
+  .label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-2);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+
+  /* ── Gradient text (PR) ───────────────────────── */
+  .gradient-text {
+    background: linear-gradient(135deg, #00C8FF 0%, #60efff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Accent badge ────────────────────────────── */
+  .badge-accent {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 6px;
+    background: var(--accent-faint);
+    border: 1px solid var(--accent-border);
+    color: var(--accent);
+  }
+
+  /* ── Neon divider ────────────────────────────── */
+  .neon-rule {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--accent), transparent);
+    opacity: 0.3;
+  }
 }
 
-body {
-  font-family: 'Pretendard', 'DM Sans', sans-serif;
+@layer utilities {
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+
+  .text-accent  { color: var(--accent); }
+  .bg-surface   { background: var(--surface); }
+  .text-1       { color: var(--text-1); }
+  .text-2       { color: var(--text-2); }
+  .text-3       { color: var(--text-3); }
+  .glow         { box-shadow: 0 0 20px var(--accent-glow); }
 }
-
-

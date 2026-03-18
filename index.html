@@ -1,35 +1,28 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    
-    <meta name="theme-color" content="#111111" />
-    <meta name="description" content="단순하고 직관적인 웨이트 트레이닝 필수 도구, 1RM 계산기" />
-    
+    <meta name="theme-color" content="#060912" />
+    <link rel="icon" sizes="192x192" href="/icon_192x192.png" />
+    <meta name="description" content="1RM 계산기 — 웨이트 트레이닝 기록 및 분석" />
+    <meta property="og:title" content="1RM 계산기" />
+    <meta property="og:description" content="웨이트 트레이닝 기록 및 분석 도구" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-
     <title>1RM 계산기</title>
+    <style>body { background: #060912; }</style>
   </head>
-  <body class="bg-[#f9f9f9] dark:bg-[#111] antialiased">
+  <body>
     <div id="root"></div>
-    
     <script type="module" src="/src/main.jsx"></script>
-
-    <script>
-      if ('service-worker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js')
-            .then(reg => console.log('서비스 워커 등록 성공:', reg.scope))
-            .catch(err => console.log('서비스 워커 등록 실패:', err));
-        });
-      }
-    </script>
   </body>
 </html>

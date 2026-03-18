@@ -1,40 +1,30 @@
 {
   "name": "1rm-calculator",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "test": "jest"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@capacitor/cli": "^7.2.0",
-    "@capacitor/core": "^7.2.0",
-    "@capacitor/ios": "^7.2.0",
-    "animate.css": "^4.1.1",
-    "chart.js": "^4.4.0",
-    "chartjs-plugin-annotation": "^3.1.0",
-    "chartjs-plugin-datalabels": "^2.2.0",
+    "@vitejs/plugin-react": "^4.7.0",
     "date-fns": "^4.1.0",
-    "keen-slider": "^6.8.6",
+    "framer-motion": "^11.18.2",
     "lucide-react": "^0.507.0",
     "react": "^18.2.0",
-    "react-calendar-heatmap": "^1.10.0",
-    "react-chartjs-2": "^5.3.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.30.0",
-    "react-swipeable": "^7.0.2"
+    "recharts": "^2.15.4",
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.0",
     "autoprefixer": "^10.4.21",
-    "jest": "^27.5.1",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.1",
     "vite": "^6.3.3",
-    "vite-plugin-pwa": "^1.0.0"
+    "vite-plugin-pwa": "^1.0.0",
+    "@vitejs/plugin-react": "4.x"
   },
   "engines": {
     "node": "24.x"
@@ -43,19 +33,17 @@
     "type": "git",
     "url": "https://github.com/amuldi/1rm_calculator"
   },
-  "bugs": {
-    "url": "https://github.com/amuldi/1rm_calculator/issues"
-  },
-  "homepage": "https://1rm_calculator.vercel.app",
-  "license": "ISC",
-  "description": "1rm_calculator | 1RM 계산과 Zone 분석을 위한 운동 분석 웹앱",
+  "homepage": "https://1rm-calculator.vercel.app",
+  "license": "MIT",
+  "description": "단순하고 직관적인 1RM 계산 및 운동 기록 분석 앱",
   "keywords": [
     "react",
     "vite",
     "tailwind",
     "fitness",
     "1RM",
-    "zone",
+    "strength",
+    "analytics",
     "pwa"
   ]
 }

@@ -1,71 +1,57 @@
-import React, { useEffect, useState } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-  useNavigate,
-} from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import OneRM from "./pages/OneRM";
-import Insight from "./pages/Insight";
-import Explore from "./pages/Explore";
-import SplashScreen from "./SplashScreen";
-import BottomNav from "./BottomNav";
+import React, { useState, useEffect, lazy, Suspense } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import Layout from "./app/layout";
+import SplashScreen from "./components/common/SplashScreen";
+import { useDarkMode } from "./hooks/useDarkMode";
+
+const DashboardPage = lazy(() => import("./features/dashboard/index"));
+const OneRMPage     = lazy(() => import("./features/1rm/index"));
+const AnalyticsPage = lazy(() => import("./features/analytics/index"));
+const ProfilePage   = lazy(() => import("./features/profile/index"));
+
+function Loader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg)" }}>
+      <div className="gold-rule w-16" />
+    </div>
+  );
+}
 
 function AppRoutes() {
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [splash, setSplash] = useState(true);
 
-  // Splash 후 /dashboard로 이동
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-      navigate("/dashboard");
-    }, 1500);
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => setSplash(false), 1800);
+    return () => clearTimeout(t);
   }, []);
-
-  if (loading) return <SplashScreen />;
 
   return (
     <>
-      <BottomNav />
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/one-rm" element={<OneRM />} />
-        <Route path="/insight" element={<Insight />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="*" element={<Navigate to="/dashboard" />} />
-      </Routes>
+      <AnimatePresence>{splash && <SplashScreen key="splash" />}</AnimatePresence>
+      {!splash && (
+        <Layout>
+          <Suspense fallback={<Loader />}>
+            <Routes>
+              <Route path="/"           element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard"  element={<DashboardPage />} />
+              <Route path="/calculator" element={<OneRMPage />} />
+              <Route path="/analytics"  element={<AnalyticsPage />} />
+              <Route path="/profile"    element={<ProfilePage />} />
+              <Route path="*"           element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </Suspense>
+        </Layout>
+      )}
     </>
   );
 }
 
 export default function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // 다크모드 감지
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    setIsDarkMode(mediaQuery.matches);
-    const handler = (e) => setIsDarkMode(e.matches);
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
-  }, []);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (isDarkMode) root.classList.add("dark");
-    else root.classList.remove("dark");
-  }, [isDarkMode]);
-
+  useDarkMode();
   return (
-    <div className="min-h-screen w-full overflow-x-hidden bg-[#f9f9f9] dark:bg-[#111] text-[#111] dark:text-white pb-28">
-      <Router>
-        <AppRoutes />
-      </Router>
-    </div>
+    <Router>
+      <AppRoutes />
+    </Router>
   );
 }
