@@ -8,6 +8,7 @@ import { useDarkMode } from "@/hooks/useDarkMode";
 const NAV_ITEMS = [
   { path: "/dashboard",  label: "대시보드" },
   { path: "/calculator", label: "1RM 계산기" },
+  { path: "/translator", label: "반복 중량" },
   { path: "/analytics",  label: "분석" },
   { path: "/profile",    label: "프로필" },
 ];

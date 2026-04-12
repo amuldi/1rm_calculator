@@ -1,11 +1,12 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LayoutDashboard, Dumbbell, BarChart3, User } from "lucide-react";
+import { LayoutDashboard, Dumbbell, Repeat, BarChart3, User } from "lucide-react";
 
 const TABS = [
   { path: "/dashboard",  icon: LayoutDashboard, label: "홈" },
   { path: "/calculator", icon: Dumbbell,        label: "계산기" },
+  { path: "/translator", icon: Repeat,          label: "반복중량" },
   { path: "/analytics",  icon: BarChart3,       label: "분석" },
   { path: "/profile",    icon: User,            label: "프로필" },
 ];
