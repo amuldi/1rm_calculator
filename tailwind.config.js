@@ -5,12 +5,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        accent: "#21D6A3",
+        accent: "#00C8FF",
         sky: {
-          neon: "#21D6A3",
-          glow: "rgba(33,214,163,0.35)",
-          dim:  "rgba(33,214,163,0.15)",
-          faint:"rgba(33,214,163,0.08)",
+          neon: "#00C8FF",
+          glow: "rgba(0,200,255,0.35)",
+          dim:  "rgba(0,200,255,0.15)",
+          faint:"rgba(0,200,255,0.08)",
         },
         navy: {
           950: "#0d0f0e",
@@ -31,7 +31,7 @@ module.exports = {
       keyframes: {
         fadeIn:    { from: { opacity: "0" }, to: { opacity: "1" } },
         slideUp:   { from: { opacity: "0", transform: "translateY(16px)" }, to: { opacity: "1", transform: "translateY(0)" } },
-        glowPulse: { "0%,100%": { boxShadow: "0 0 12px rgba(33,214,163,0.2)" }, "50%": { boxShadow: "0 0 28px rgba(33,214,163,0.45)" } },
+        glowPulse: { "0%,100%": { boxShadow: "0 0 12px rgba(0,200,255,0.2)" }, "50%": { boxShadow: "0 0 28px rgba(0,200,255,0.45)" } },
       },
     },
   },

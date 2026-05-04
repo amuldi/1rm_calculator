@@ -6,7 +6,7 @@ import { EXERCISES, CHART_COLORS } from "@/constants/exercises";
 import { getDisplayWeightFromKg, getRecordRMKg, getTrend } from "@/lib/utils";
 
 const TREND = {
-  up: { icon: TrendingUp, label: "상승 중", color: "#21D6A3" },
+  up: { icon: TrendingUp, label: "상승 중", color: "#00C8FF" },
   stable: { icon: Minus, label: "유지 중", color: "#8A938B" },
   down: { icon: TrendingDown, label: "하락 중", color: "#F87171" },
 };

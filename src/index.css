@@ -4,10 +4,10 @@
 
 @layer base {
   :root {
-    --accent:        #21d6a3;
-    --accent-border: rgba(33, 214, 163, 0.24);
-    --accent-faint:  rgba(33, 214, 163, 0.10);
-    --accent-glow:   rgba(33, 214, 163, 0.28);
+    --accent:        #00c8ff;
+    --accent-border: rgba(0, 200, 255, 0.26);
+    --accent-faint:  rgba(0, 200, 255, 0.11);
+    --accent-glow:   rgba(0, 200, 255, 0.30);
     --gold:          #f4bd50;
     --bg:            #0d0f0e;
     --surface:       #141715;
@@ -16,10 +16,10 @@
     --text-1:        #f3f7f3;
     --text-2:        #a4b0a8;
     --text-3:        #68736b;
-    --border:        rgba(33, 214, 163, 0.14);
+    --border:        rgba(0, 200, 255, 0.16);
     --border-subtle: rgba(255, 255, 255, 0.07);
     --nav-bg:        rgba(13, 15, 14, 0.92);
-    --nav-border:    rgba(33, 214, 163, 0.16);
+    --nav-border:    rgba(0, 200, 255, 0.18);
     --overlay:       rgba(13, 15, 14, 0.72);
     --control-bg:    rgba(255, 255, 255, 0.06);
     --control-active: rgba(255, 255, 255, 0.12);
@@ -28,7 +28,7 @@
     --row-hover:     rgba(255, 255, 255, 0.05);
     --muted-fill:    rgba(255, 255, 255, 0.07);
     --chart-grid:    rgba(255, 255, 255, 0.04);
-    --chart-cursor:  rgba(33, 214, 163, 0.16);
+    --chart-cursor:  rgba(0, 200, 255, 0.18);
     --text-on-accent: #0d0f0e;
     --shadow-soft:   0 18px 50px rgba(0, 0, 0, 0.16);
     --shadow-menu:   0 24px 60px rgba(0, 0, 0, 0.36);
@@ -47,19 +47,19 @@
     --text-1:  #111713;
     --text-2:  #546158;
     --text-3:  #8b958d;
-    --border:  rgba(33, 142, 112, 0.18);
+    --border:  rgba(0, 125, 190, 0.16);
     --border-subtle: rgba(17, 23, 19, 0.08);
     --nav-bg: rgba(255, 254, 250, 0.90);
     --nav-border: rgba(17, 23, 19, 0.08);
     --overlay: rgba(17, 23, 19, 0.34);
     --control-bg: rgba(17, 23, 19, 0.055);
-    --control-active: rgba(33, 142, 112, 0.12);
-    --control-hover: rgba(33, 142, 112, 0.08);
+    --control-active: rgba(0, 125, 190, 0.10);
+    --control-hover: rgba(0, 125, 190, 0.08);
     --row-bg: rgba(17, 23, 19, 0.035);
-    --row-hover: rgba(33, 142, 112, 0.08);
+    --row-hover: rgba(0, 125, 190, 0.08);
     --muted-fill: rgba(17, 23, 19, 0.08);
     --chart-grid: rgba(17, 23, 19, 0.08);
-    --chart-cursor: rgba(33, 142, 112, 0.14);
+    --chart-cursor: rgba(0, 125, 190, 0.14);
     --text-on-accent: #0d0f0e;
     --shadow-soft: 0 18px 44px rgba(31, 42, 34, 0.08);
     --shadow-menu: 0 18px 44px rgba(31, 42, 34, 0.14);
