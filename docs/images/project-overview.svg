@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#F8FBFF"/><stop offset="0.56" stop-color="#F2F8FC"/><stop offset="1" stop-color="#EEF7F2"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00C8FF"/><stop offset="1" stop-color="#7C8CF8"/></linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feDropShadow dx="0" dy="22" stdDeviation="24" flood-color="#1F2A22" flood-opacity="0.12"/></filter>
+    <style>
+      .font{font-family:Inter,Pretendard,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}.title{font-size:72px;font-weight:900;letter-spacing:0;fill:#111713}.subtitle{font-size:24px;font-weight:650;fill:#546158}.eyebrow{font-size:20px;font-weight:850;fill:#007DBE;letter-spacing:1px}.cardTitle{font-size:27px;font-weight:850;fill:#111713}.cardBody{font-size:19px;font-weight:600;fill:#546158}.small{font-size:17px;font-weight:700;fill:#546158}.label{font-size:16px;font-weight:850;fill:#8B958D;letter-spacing:.8px}.pillText{font-size:17px;font-weight:850;fill:#0D0F0E}
+    </style>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <circle cx="1330" cy="135" r="230" fill="#00C8FF" opacity="0.08"/><circle cx="205" cy="760" r="240" fill="#F4BD50" opacity="0.10"/>
+  <g class="font">
+    <text x="110" y="122" class="eyebrow">STRENGTH TRAINING WEB APP</text>
+    <text x="110" y="205" class="title">1RM 계산기</text>
+    <text x="110" y="252" class="subtitle">종목별 공식으로 1RM을 자동 추정하고,</text>
+    <text x="110" y="286" class="subtitle">운동 기록과 목표 진행률까지 한 번에 관리합니다.</text>
+    <g transform="translate(1120 82)"><rect width="350" height="84" rx="24" fill="#FFFEFA" filter="url(#soft)"/><rect x="22" y="19" width="46" height="46" rx="14" fill="url(#accent)"/><path d="M47 28v34M36 38h22M36 52h22" stroke="#0D0F0E" stroke-width="4" stroke-linecap="round"/><text x="90" y="35" class="label">LIVE SERVICE</text><text x="90" y="63" class="small">rm-calculator-3cf1d.web.app</text></g>
+    <g transform="translate(105 350)" filter="url(#soft)"><rect width="420" height="315" rx="22" fill="#FFFEFA"/><rect x="30" y="30" width="56" height="56" rx="16" fill="#EAF9FF"/><text x="49" y="66" font-size="20" font-weight="900" fill="#00A8D8">01</text><text x="30" y="122" class="cardTitle">운동 기록 입력</text><text x="30" y="164" class="cardBody">운동 종목, 무게, 반복 횟수만 입력</text><text x="30" y="194" class="cardBody">반복 횟수는 신뢰 범위인 1~15회</text><rect x="30" y="235" width="150" height="44" rx="13" fill="#F4F6EF"/><text x="52" y="263" class="small">벤치프레스</text><rect x="195" y="235" width="82" height="44" rx="13" fill="#F4F6EF"/><text x="216" y="263" class="small">100kg</text><rect x="292" y="235" width="68" height="44" rx="13" fill="#F4F6EF"/><text x="314" y="263" class="small">5회</text></g>
+    <g transform="translate(590 350)" filter="url(#soft)"><rect width="420" height="315" rx="22" fill="#FFFEFA"/><rect x="30" y="30" width="56" height="56" rx="16" fill="#EAF9FF"/><text x="49" y="66" font-size="20" font-weight="900" fill="#00A8D8">02</text><text x="30" y="122" class="cardTitle">공식 자동 선택</text><text x="30" y="164" class="cardBody">벤치, 스쿼트, 데드리프트 등</text><text x="30" y="194" class="cardBody">종목별로 적합한 계산식을 적용</text><rect x="30" y="235" width="120" height="44" rx="13" fill="#00C8FF"/><text x="60" y="264" class="pillText">AUTO</text><rect x="165" y="235" width="150" height="44" rx="13" fill="#F4F6EF"/><text x="190" y="263" class="small">Mayhew 적용</text></g>
+    <g transform="translate(1075 350)" filter="url(#soft)"><rect width="420" height="315" rx="22" fill="#FFFEFA"/><rect x="30" y="30" width="56" height="56" rx="16" fill="#EAF9FF"/><text x="49" y="66" font-size="20" font-weight="900" fill="#00A8D8">03</text><text x="30" y="122" class="cardTitle">기록과 분석</text><text x="30" y="164" class="cardBody">PR, 주간 볼륨, 목표 진행률을</text><text x="30" y="194" class="cardBody">대시보드와 차트에서 확인</text><rect x="30" y="232" width="360" height="52" rx="16" fill="#F4F6EF"/><rect x="52" y="252" width="92" height="12" rx="6" fill="#00C8FF"/><rect x="160" y="247" width="78" height="22" rx="11" fill="#F4BD50" opacity="0.85"/><rect x="254" y="242" width="88" height="32" rx="14" fill="#7C8CF8" opacity="0.72"/></g>
+    <g transform="translate(190 724)"><rect width="1220" height="72" rx="22" fill="#111713" opacity="0.92"/><text x="44" y="45" font-size="22" font-weight="800" fill="#FFFEFA">회원가입 없는 브라우저 저장 · kg/lb 전환 · 라이트/다크 모드 · PWA 지원</text></g>
+  </g>
+</svg>
