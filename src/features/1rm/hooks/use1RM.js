@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo } from "react";
 import { useWorkoutStore } from "@/store/workoutStore";
 import { useGoalStore } from "@/store/goalStore";
 import { useUIStore } from "@/store/uiStore";
-import { calculate1RM, calculateAll1RM } from "../utils/formulas";
+import { calculate1RM, calculateAll1RM, getRecommendedFormula, MAX_REPS } from "../utils/formulas";
 import { convertWeight, getDisplayWeightFromKg, getRecordRMKg } from "@/lib/utils";
 
 function validate(exerciseId, weight, reps) {
@@ -13,7 +13,7 @@ function validate(exerciseId, weight, reps) {
   else if (w > 500) errs.weight = "500 이하의 무게를 입력하세요.";
   const r = parseInt(reps, 10);
   if (!reps || isNaN(r)) errs.reps = "반복 횟수를 입력하세요.";
-  else if (r < 1 || r > 30) errs.reps = "1 ~ 30 사이 값을 입력하세요.";
+  else if (r < 1 || r > MAX_REPS) errs.reps = `1 ~ ${MAX_REPS} 사이 값을 입력하세요.`;
   return errs;
 }
 
@@ -26,7 +26,7 @@ export function use1RM() {
   const [resultMeta, setResultMeta] = useState(null);
   const [errors, setErrors] = useState({});
 
-  const { unit, selectedFormula, setFormula } = useUIStore();
+  const { unit } = useUIStore();
   const { addRecord, history } = useWorkoutStore();
   const { getGoal, getProgress } = useGoalStore();
 
@@ -40,9 +40,19 @@ export function use1RM() {
     [display, resultKg]
   );
 
+  const recommendedFormula = useMemo(
+    () => getRecommendedFormula(exerciseId),
+    [exerciseId]
+  );
+  const appliedFormulaId = resultMeta?.formulaId ?? recommendedFormula.id;
+
   const allResults = useMemo(
-    () => allResultsKg?.map((formula) => ({ ...formula, value: display(formula.value) })) ?? null,
-    [allResultsKg, display]
+    () => allResultsKg?.map((formula) => ({
+      ...formula,
+      value: display(formula.value),
+      recommended: formula.id === appliedFormulaId,
+    })) ?? null,
+    [allResultsKg, appliedFormulaId, display]
   );
 
   const currentGoal = useMemo(() => getGoal(exerciseId, unit), [exerciseId, getGoal, unit]);
@@ -74,7 +84,7 @@ export function use1RM() {
     const r = parseInt(reps, 10);
     const weightKg = unit === "lb" ? convertWeight(w, "lb", "kg") : w;
 
-    const rmKg = calculate1RM(weightKg, r, selectedFormula);
+    const rmKg = calculate1RM(weightKg, r, recommendedFormula.id);
     const allKg = calculateAll1RM(weightKg, r);
     const previous = history.filter((record) => record.exerciseId === exerciseId);
     const previousBestKg = previous.length
@@ -90,14 +100,14 @@ export function use1RM() {
       rm: display(rmKg),
       rmKg,
       unit,
-      formula: selectedFormula,
+      formula: recommendedFormula.id,
       date: new Date().toISOString(),
     });
 
     setResultKg(rmKg);
     setAllResultsKg(allKg);
-    setResultMeta({ recordId: record.id, isPR });
-  }, [addRecord, display, exerciseId, history, reps, selectedFormula, unit, weight]);
+    setResultMeta({ recordId: record.id, isPR, formulaId: recommendedFormula.id });
+  }, [addRecord, display, exerciseId, history, recommendedFormula.id, reps, unit, weight]);
 
   const reset = useCallback(() => {
     setResultKg(null);
@@ -112,7 +122,9 @@ export function use1RM() {
     reps, setReps,
     result, allResults,
     errors,
-    unit, selectedFormula, setFormula,
+    unit,
+    selectedFormula: appliedFormulaId,
+    recommendedFormula,
     currentGoal, currentPR, goalProgress,
     isPR: Boolean(resultMeta?.isPR),
     calculate, reset,

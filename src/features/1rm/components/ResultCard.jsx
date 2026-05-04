@@ -78,7 +78,10 @@ export function ResultCard({ result, allResults, isPR, goalProgress, currentGoal
               return (
                 <div key={f.id} className="space-y-1">
                   <div className="flex justify-between items-baseline">
-                    <span className="text-sm font-medium" style={{ color: "var(--text-1)" }}>{f.label}</span>
+                    <span className="flex items-center gap-2">
+                      <span className="text-sm font-medium" style={{ color: f.recommended ? "var(--accent)" : "var(--text-1)" }}>{f.label}</span>
+                      {f.recommended && <span className="badge-accent text-[9px]">적용</span>}
+                    </span>
                     <span className="text-sm font-bold tabular-nums" style={{ color: "var(--text-1)" }}>
                       {f.value} <span className="text-xs font-normal" style={{ color: "var(--text-2)" }}>{unit}</span>
                     </span>
@@ -89,7 +92,7 @@ export function ResultCard({ result, allResults, isPR, goalProgress, currentGoal
                       animate={{ width: `${pct}%` }}
                       transition={{ duration: 0.6, ease: "easeOut" }}
                       className="h-full rounded-full"
-                      style={{ background: "var(--accent)", opacity: 0.5 }}
+                      style={{ background: "var(--accent)", opacity: f.recommended ? 0.85 : 0.4 }}
                     />
                   </div>
                 </div>

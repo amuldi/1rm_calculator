@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Zap, Info } from "lucide-react";
 import { EXERCISES } from "@/constants/exercises";
-import { FORMULA_LIST } from "../utils/formulas";
+import { getRecommendedFormula, MAX_REPS } from "../utils/formulas";
 import { useUIStore } from "@/store/uiStore";
 
 const HINTS = {
   weight: "운동 중 실제로 든 무게를 입력하세요 (바벨 포함).",
-  reps:   "1~30 사이의 반복 횟수. 5회 이하에서 정확도가 높습니다.",
+  reps:   `1~${MAX_REPS} 사이의 반복 횟수. 5회 이하에서 정확도가 높습니다.`,
 };
 
 function Dropdown({ value, onChange, options, placeholder, renderOption, renderSelected }) {
@@ -147,9 +147,9 @@ function NumberField({ label, value, onChange, placeholder, hint, suffix, min, m
 }
 
 export function Calculator({ onCalculate, exerciseId, setExerciseId, weight, setWeight, reps, setReps, errors = {} }) {
-  const { unit, setUnit, selectedFormula, setFormula } = useUIStore();
+  const { unit, setUnit } = useUIStore();
   const selectedEx = EXERCISES.find((e) => e.id === exerciseId);
-  const selectedFm = FORMULA_LIST.find((f) => f.id === selectedFormula);
+  const recommendedFormula = getRecommendedFormula(exerciseId);
 
   return (
     <div className="card p-5 space-y-5">
@@ -208,25 +208,26 @@ export function Calculator({ onCalculate, exerciseId, setExerciseId, weight, set
       {/* Weight + Reps */}
       <div className="grid grid-cols-2 gap-3">
         <NumberField label="무게" value={weight} onChange={setWeight} placeholder="100" suffix={unit} min={1} max={500} hint={HINTS.weight} error={errors.weight} />
-        <NumberField label="반복 횟수" value={reps} onChange={setReps} placeholder="5" suffix="회" min={1} max={30} hint={HINTS.reps} error={errors.reps} />
+        <NumberField label="반복 횟수" value={reps} onChange={setReps} placeholder="5" suffix="회" min={1} max={MAX_REPS} hint={HINTS.reps} error={errors.reps} />
       </div>
 
       {/* Formula */}
       <div className="space-y-1.5">
         <label className="label">계산 공식</label>
-        <Dropdown
-          value={selectedFormula}
-          onChange={setFormula}
-          options={FORMULA_LIST}
-          placeholder="공식 선택"
-          renderSelected={() => selectedFm ? `${selectedFm.label} — ${selectedFm.description}` : ""}
-          renderOption={(f) => (
-            <div>
-              <span className="font-semibold">{f.label}</span>
-              <span className="ml-2 text-xs" style={{ color: "var(--text-2)" }}>{f.description}</span>
-            </div>
-          )}
-        />
+        <div
+          className="field flex items-center justify-between gap-3"
+          style={{ background: "var(--row-bg)" }}
+        >
+          <div className="min-w-0">
+            <p className="text-sm font-semibold truncate" style={{ color: "var(--text-1)" }}>
+              {exerciseId ? recommendedFormula.label : "자동 선택"}
+            </p>
+            <p className="text-xs mt-0.5 truncate" style={{ color: "var(--text-2)" }}>
+              {exerciseId ? `${selectedEx?.labelKo} · ${recommendedFormula.description}` : "종목별 기준 적용"}
+            </p>
+          </div>
+          <span className="badge-accent shrink-0">AUTO</span>
+        </div>
       </div>
 
       {/* Submit */}
