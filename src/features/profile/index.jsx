@@ -144,7 +144,7 @@ export default function ProfilePage() {
                   className="px-4 py-1.5 rounded-md text-xs font-bold transition-all"
                   style={{
                     background: unit === u ? "var(--accent)" : "transparent",
-                    color:      unit === u ? "#060912" : "var(--text-2)",
+                    color:      unit === u ? "#0d0f0e" : "var(--text-2)",
                   }}
                 >
                   {u}

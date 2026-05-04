@@ -4,26 +4,29 @@ import { Target, Trash2, CheckCircle2 } from "lucide-react";
 import { useGoalStore } from "@/store/goalStore";
 import { useWorkoutStore } from "@/store/workoutStore";
 import { useUIStore } from "@/store/uiStore";
-import { clamp } from "@/lib/utils";
+import { clamp, getDisplayWeightFromKg, getRecordRMKg } from "@/lib/utils";
 
 export function GoalSetter({ exerciseId }) {
   const { unit } = useUIStore();
-  const { goals, setGoal, deleteGoal } = useGoalStore();
+  const { setGoal, deleteGoal, getGoal, getGoalKg } = useGoalStore();
   const { history } = useWorkoutStore();
 
-  const currentGoal = exerciseId ? goals[exerciseId] : null;
+  const currentGoal = exerciseId ? getGoal(exerciseId, unit) : null;
+  const currentGoalKg = exerciseId ? getGoalKg(exerciseId) : null;
   const [input, setInput] = useState(currentGoal?.toString() || "");
   const [saved, setSaved] = useState(false);
 
-  const currentBest = useMemo(() => {
+  const currentBestKg = useMemo(() => {
     if (!exerciseId) return null;
     const recs = history.filter((r) => r.exerciseId === exerciseId);
     if (!recs.length) return null;
-    return Math.max(...recs.map((r) => r.rm));
+    return Math.max(...recs.map((r) => getRecordRMKg(r)));
   }, [exerciseId, history]);
 
-  const progress = currentGoal && currentBest
-    ? clamp(Math.round((currentBest / currentGoal) * 100), 0, 100)
+  const currentBest = currentBestKg == null ? null : getDisplayWeightFromKg(currentBestKg, unit);
+
+  const progress = currentGoalKg && currentBestKg
+    ? clamp(Math.round((currentBestKg / currentGoalKg) * 100), 0, 100)
     : 0;
 
   useEffect(() => {
@@ -34,7 +37,7 @@ export function GoalSetter({ exerciseId }) {
   const save = () => {
     const v = parseFloat(input);
     if (!exerciseId || isNaN(v) || v <= 0) return;
-    setGoal(exerciseId, v);
+    setGoal(exerciseId, v, unit);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -63,7 +66,7 @@ export function GoalSetter({ exerciseId }) {
                   transition={{ duration: 0.8, ease: "easeOut" }}
                   className="h-full rounded-full"
                   style={{
-                    background: progress >= 100 ? "var(--accent)" : "linear-gradient(to right, var(--accent), rgba(0,200,255,0.4))",
+                    background: progress >= 100 ? "var(--accent)" : "linear-gradient(to right, var(--accent), rgba(244,189,80,0.65))",
                   }}
                 />
               </div>
@@ -114,7 +117,7 @@ export function GoalSetter({ exerciseId }) {
             </button>
 
             {currentGoal && (
-              <button onClick={() => deleteGoal(exerciseId)} className="btn-danger w-10 h-10 p-0 shrink-0">
+              <button onClick={() => deleteGoal(exerciseId)} className="btn-danger w-10 h-10 p-0 shrink-0" aria-label="목표 삭제">
                 <Trash2 size={15} />
               </button>
             )}

@@ -8,7 +8,7 @@ export const EXERCISES = [
 
 export const EXERCISE_MAP = Object.fromEntries(EXERCISES.map((e) => [e.id, e]));
 
-export const CHART_COLORS = ["#C9A84C", "#a09880", "#7a7060", "#bfb09a", "#d6cbb8"];
+export const CHART_COLORS = ["#21D6A3", "#F4BD50", "#FF7A59", "#7C8CF8", "#A3B18A"];
 
 export const FILTER_OPTIONS = [
   { value: "all",   label: "전체" },

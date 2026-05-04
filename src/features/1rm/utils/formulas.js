@@ -1,9 +1,9 @@
 export const FORMULA_LIST = [
-  { id: "epley", label: "Epley", description: "Most widely used formula" },
-  { id: "brzycki", label: "Brzycki", description: "Accurate for lower rep ranges" },
-  { id: "lombardi", label: "Lombardi", description: "Conservative estimate" },
-  { id: "mayhew", label: "Mayhew", description: "Research-validated formula" },
-  { id: "oconner", label: "O'Conner", description: "Simple linear model" },
+  { id: "epley", label: "Epley", description: "범용 표준 공식" },
+  { id: "brzycki", label: "Brzycki", description: "저반복 구간에 강함" },
+  { id: "lombardi", label: "Lombardi", description: "보수적인 추정" },
+  { id: "mayhew", label: "Mayhew", description: "연구 기반 공식" },
+  { id: "oconner", label: "O'Conner", description: "직관적인 선형 모델" },
 ];
 
 export const FORMULAS = {

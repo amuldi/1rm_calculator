@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip,
   ResponsiveContainer, CartesianGrid,
 } from "recharts";
 import { format, parseISO } from "date-fns";
 import { EXERCISES, CHART_COLORS } from "@/constants/exercises";
+import { getDisplayWeightFromKg, getRecordRMKg } from "@/lib/utils";
 
 const Tip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
@@ -14,7 +15,7 @@ const Tip = ({ active, payload, label }) => {
       style={{
         background: "var(--card)",
         border: "1px solid var(--accent-border)",
-        borderRadius: "12px",
+        borderRadius: "8px",
       }}
     >
       <p className="text-xs mb-2" style={{ color: "var(--text-2)" }}>{label}</p>
@@ -33,23 +34,30 @@ const Tip = ({ active, payload, label }) => {
   );
 };
 
-export function StrengthCurve({ groupedHistory }) {
+export function StrengthCurve({ groupedHistory, unit }) {
   const exercises = EXERCISES.filter((ex) => groupedHistory[ex.id]?.length > 0);
   const [active, setActive] = useState(() =>
     Object.fromEntries(exercises.map((ex) => [ex.id, true]))
   );
 
+  useEffect(() => {
+    setActive((prev) => ({
+      ...Object.fromEntries(exercises.map((ex) => [ex.id, true])),
+      ...prev,
+    }));
+  }, [exercises.map((ex) => ex.id).join(",")]);
+
   const allDates = [...new Set(
-    Object.values(groupedHistory).flat().map((r) => r.date?.split("T")[0])
+    Object.values(groupedHistory).flat().map((r) => r.date?.split("T")[0]).filter(Boolean)
   )].sort();
 
   const chartData = allDates.map((date) => {
-    const point = { date, label: format(parseISO(date), "M/d") };
+    const point = { date, label: format(parseISO(date), "M/d"), unit };
     for (const ex of exercises) {
       const recs = groupedHistory[ex.id]?.filter((r) => r.date?.startsWith(date)) || [];
       if (recs.length) {
-        point[ex.id] = Math.max(...recs.map((r) => r.rm));
-        point.unit = recs[0].unit;
+        const bestKg = Math.max(...recs.map((r) => getRecordRMKg(r)));
+        point[ex.id] = getDisplayWeightFromKg(bestKg, unit);
       }
     }
     return point;
@@ -75,7 +83,7 @@ export function StrengthCurve({ groupedHistory }) {
                 : { borderColor: "rgba(255,255,255,0.08)", color: "var(--text-3)" }
             }
           >
-            {ex.abbr} {ex.label}
+            {ex.abbr} {ex.labelKo}
           </button>
         ))}
       </div>
@@ -102,7 +110,7 @@ export function StrengthCurve({ groupedHistory }) {
                 key={ex.id}
                 type="monotone"
                 dataKey={ex.id}
-                name={ex.label}
+                name={ex.labelKo}
                 stroke={CHART_COLORS[i % CHART_COLORS.length]}
                 strokeWidth={active[ex.id] ? 2 : 0}
                 dot={false}

@@ -19,8 +19,8 @@ export default function BottomNav() {
     <nav
       className="md:hidden fixed bottom-0 left-0 right-0 z-50"
       style={{
-        background: "rgba(6,9,18,0.95)",
-        borderTop: "1px solid rgba(0,200,255,0.10)",
+        background: "var(--nav-bg)",
+        borderTop: "1px solid var(--nav-border)",
         backdropFilter: "blur(20px)",
       }}
     >

@@ -2,14 +2,19 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Target, CheckCircle2 } from "lucide-react";
 import { EXERCISES } from "@/constants/exercises";
-import { clamp } from "@/lib/utils";
+import { clamp, getDisplayWeightFromKg, getGoalKg, getRecordRMKg } from "@/lib/utils";
 
 export function GoalProgress({ goals, prMap, unit }) {
   const items = EXERCISES.filter((ex) => goals[ex.id] != null).map((ex) => {
-    const goal = goals[ex.id];
-    const current = prMap[ex.id]?.rm ?? 0;
-    const pct = clamp(Math.round((current / goal) * 100), 0, 100);
-    return { ...ex, goal, current, pct };
+    const goalKg = getGoalKg(goals[ex.id]);
+    const currentKg = prMap[ex.id] ? getRecordRMKg(prMap[ex.id]) : 0;
+    const pct = goalKg ? clamp(Math.round((currentKg / goalKg) * 100), 0, 100) : 0;
+    return {
+      ...ex,
+      goal: getDisplayWeightFromKg(goalKg, unit),
+      current: getDisplayWeightFromKg(currentKg, unit),
+      pct,
+    };
   });
 
   if (!items.length) return null;
@@ -31,18 +36,18 @@ export function GoalProgress({ goals, prMap, unit }) {
               animate={{ opacity: 1 }}
               transition={{ delay: i * 0.07 }}
             >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <div
                     className="w-6 h-6 rounded-md flex items-center justify-center text-[9px] font-black shrink-0"
                     style={{ background: "var(--accent-faint)", color: "var(--accent)" }}
                   >
                     {ex.abbr}
                   </div>
-                  <span className="text-sm font-medium" style={{ color: "var(--text-1)" }}>{ex.label}</span>
+                  <span className="text-sm font-medium truncate" style={{ color: "var(--text-1)" }}>{ex.labelKo}</span>
                   {done && <CheckCircle2 size={13} style={{ color: "var(--accent)" }} />}
                 </div>
-                <div className="text-right">
+                <div className="text-right shrink-0">
                   <span
                     className="text-sm font-bold tabular-nums"
                     style={{ color: done ? "var(--accent)" : "var(--text-1)" }}
@@ -67,7 +72,7 @@ export function GoalProgress({ goals, prMap, unit }) {
                   style={{
                     background: done
                       ? "var(--accent)"
-                      : "linear-gradient(to right, var(--accent), rgba(0,200,255,0.5))",
+                      : "linear-gradient(to right, var(--accent), rgba(244,189,80,0.65))",
                     boxShadow: done ? "0 0 8px var(--accent-glow)" : "none",
                   }}
                 />

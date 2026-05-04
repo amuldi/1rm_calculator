@@ -14,18 +14,24 @@ const ProfilePage   = lazy(() => import("./features/profile/index"));
 function Loader() {
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg)" }}>
-      <div className="gold-rule w-16" />
+      <div className="neon-rule w-16" />
     </div>
   );
 }
 
 function AppRoutes() {
-  const [splash, setSplash] = useState(true);
+  const [splash, setSplash] = useState(() => {
+    if (typeof window === "undefined") return true;
+    const params = new URLSearchParams(window.location.search);
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    return !params.has("skipSplash") && !reduceMotion;
+  });
 
   useEffect(() => {
-    const t = setTimeout(() => setSplash(false), 1800);
+    if (!splash) return undefined;
+    const t = setTimeout(() => setSplash(false), 900);
     return () => clearTimeout(t);
-  }, []);
+  }, [splash]);
 
   return (
     <>

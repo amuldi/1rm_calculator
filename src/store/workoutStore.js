@@ -1,6 +1,32 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { generateId } from "@/lib/utils";
+import {
+  generateId,
+  getRecordRMKg,
+  getRecordVolume,
+  normalizeWorkoutRecord,
+} from "@/lib/utils";
+
+function sortByNewest(records) {
+  return [...records].sort((a, b) => {
+    const aTime = new Date(a.date || a.createdAt || 0).getTime() || 0;
+    const bTime = new Date(b.date || b.createdAt || 0).getTime() || 0;
+    return bTime - aTime;
+  });
+}
+
+function normalizeRecords(records) {
+  if (!Array.isArray(records)) return [];
+  return sortByNewest(
+    records.map((record) =>
+      normalizeWorkoutRecord({
+        ...record,
+        id: record.id || generateId(),
+        createdAt: record.createdAt || record.date || new Date().toISOString(),
+      })
+    )
+  );
+}
 
 export const useWorkoutStore = create(
   persist(
@@ -8,11 +34,13 @@ export const useWorkoutStore = create(
       history: [],
 
       addRecord: (record) => {
-        const newRecord = {
+        const now = new Date().toISOString();
+        const newRecord = normalizeWorkoutRecord({
           ...record,
           id: generateId(),
-          createdAt: new Date().toISOString(),
-        };
+          createdAt: now,
+          date: record.date || now,
+        });
         set((state) => ({ history: [newRecord, ...state.history] }));
         return newRecord;
       },
@@ -23,36 +51,39 @@ export const useWorkoutStore = create(
       clearHistory: () => set({ history: [] }),
 
       importHistory: (records) => {
-        const imported = records.map((r) => ({
-          ...r,
-          id: r.id || generateId(),
-          createdAt: r.createdAt || r.date || new Date().toISOString(),
-        }));
-        set({ history: imported });
+        set({ history: normalizeRecords(records) });
       },
 
       getPRByExercise: () => {
         const map = {};
         for (const record of get().history) {
           const key = record.exerciseId;
-          if (!map[key] || record.rm > map[key].rm) {
+          if (!key) continue;
+          if (!map[key] || getRecordRMKg(record) > getRecordRMKg(map[key])) {
             map[key] = record;
           }
         }
         return map;
       },
 
-      getWeeklyVolume: () => {
+      getWeeklyVolume: (unit = "kg") => {
         const now = Date.now();
         const week = 7 * 86400000;
         return get()
-          .history.filter((r) => now - new Date(r.date).getTime() <= week)
-          .reduce((s, r) => s + r.weight * r.reps, 0);
+          .history.filter((r) => {
+            const time = new Date(r.date).getTime();
+            return Number.isFinite(time) && now - time <= week;
+          })
+          .reduce((sum, record) => sum + getRecordVolume(record, unit), 0);
       },
 
       getStreakDays: () => {
         const dates = [
-          ...new Set(get().history.map((r) => r.date?.split("T")[0])),
+          ...new Set(
+            get()
+              .history.map((r) => r.date?.split("T")[0])
+              .filter(Boolean)
+          ),
         ].sort((a, b) => b.localeCompare(a));
 
         if (!dates.length) return 0;
@@ -60,17 +91,26 @@ export const useWorkoutStore = create(
         const today = new Date().toISOString().split("T")[0];
         let cursor = today;
 
-        for (const d of dates) {
-          if (d === cursor) {
+        for (const date of dates) {
+          if (date === cursor) {
             streak++;
             const prev = new Date(cursor);
             prev.setDate(prev.getDate() - 1);
             cursor = prev.toISOString().split("T")[0];
-          } else break;
+          } else {
+            break;
+          }
         }
         return streak;
       },
     }),
-    { name: "1rm-workout", version: 1 }
+    {
+      name: "1rm-workout",
+      version: 2,
+      migrate: (state) => ({
+        ...state,
+        history: normalizeRecords(state?.history),
+      }),
+    }
   )
 );

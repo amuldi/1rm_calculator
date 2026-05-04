@@ -3,12 +3,12 @@ import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { EXERCISES, CHART_COLORS } from "@/constants/exercises";
-import { getTrend } from "@/lib/utils";
+import { getDisplayWeightFromKg, getRecordRMKg, getTrend } from "@/lib/utils";
 
 const TREND = {
-  up:     { icon: TrendingUp,   label: "상승 중", color: "#00C8FF" },
-  stable: { icon: Minus,        label: "유지 중", color: "#5a7a9a" },
-  down:   { icon: TrendingDown, label: "하락 중", color: "#f87171" },
+  up: { icon: TrendingUp, label: "상승 중", color: "#21D6A3" },
+  stable: { icon: Minus, label: "유지 중", color: "#8A938B" },
+  down: { icon: TrendingDown, label: "하락 중", color: "#F87171" },
 };
 
 const PieTip = ({ active, payload }) => {
@@ -19,7 +19,7 @@ const PieTip = ({ active, payload }) => {
       style={{
         background: "var(--card)",
         border: "1px solid var(--accent-border)",
-        borderRadius: "10px",
+        borderRadius: "8px",
       }}
     >
       <span className="text-xs font-semibold" style={{ color: "var(--text-1)" }}>{payload[0].name}</span>
@@ -28,18 +28,17 @@ const PieTip = ({ active, payload }) => {
   );
 };
 
-export function TrendSummary({ groupedHistory }) {
+export function TrendSummary({ groupedHistory, unit }) {
   const exercises = EXERCISES.filter((ex) => groupedHistory[ex.id]?.length >= 1);
 
   const pieData = exercises.map((ex, i) => ({
-    name: ex.label,
+    name: ex.labelKo,
     value: groupedHistory[ex.id]?.length || 0,
     color: CHART_COLORS[i % CHART_COLORS.length],
   }));
 
   return (
     <div className="space-y-4">
-      {/* Distribution donut */}
       <div className="card p-5">
         <p className="section-label mb-4">종목 분포</p>
         <div className="flex items-center gap-6">
@@ -54,8 +53,8 @@ export function TrendSummary({ groupedHistory }) {
                   dataKey="value"
                   strokeWidth={0}
                 >
-                  {pieData.map((entry, i) => (
-                    <Cell key={i} fill={entry.color} />
+                  {pieData.map((entry) => (
+                    <Cell key={entry.name} fill={entry.color} />
                   ))}
                 </Pie>
                 <Tooltip content={<PieTip />} />
@@ -78,17 +77,20 @@ export function TrendSummary({ groupedHistory }) {
         </div>
       </div>
 
-      {/* Trend per exercise */}
       <div className="card overflow-hidden">
         <div className="px-5 pt-5 pb-3">
           <p className="section-label">종목별 트렌드</p>
         </div>
         <div className="divide-y" style={{ borderColor: "var(--border-subtle)" }}>
           {exercises.map((ex, i) => {
-            const rms = groupedHistory[ex.id].map((r) => r.rm);
-            const trend = getTrend(rms);
+            const records = [...groupedHistory[ex.id]].sort(
+              (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+            );
+            const rmsKg = records.map((r) => getRecordRMKg(r));
+            const rms = rmsKg.map((value) => getDisplayWeightFromKg(value, unit));
+            const trend = getTrend(rmsKg);
             const { icon: Icon, label, color } = TREND[trend];
-            const best = Math.max(...rms);
+            const best = getDisplayWeightFromKg(Math.max(...rmsKg), unit);
             const latest = rms[rms.length - 1];
             const prev = rms[Math.max(0, rms.length - 2)];
             const delta = rms.length > 1 ? latest - prev : 0;
@@ -99,28 +101,28 @@ export function TrendSummary({ groupedHistory }) {
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.06 }}
-                className="flex items-center justify-between px-5 py-3.5 transition-colors"
+                className="flex items-center justify-between gap-3 px-5 py-3.5 transition-colors"
                 onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
                 onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 min-w-0">
                   <div
                     className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black shrink-0"
                     style={{ background: "var(--accent-faint)", color: "var(--accent)" }}
                   >
                     {ex.abbr}
                   </div>
-                  <div>
-                    <p className="text-sm font-medium" style={{ color: "var(--text-1)" }}>{ex.label}</p>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium truncate" style={{ color: "var(--text-1)" }}>{ex.labelKo}</p>
                     <p className="text-xs mt-0.5" style={{ color: "var(--text-2)" }}>
-                      최고 {best} · {rms.length}회 세션
+                      최고 {best} {unit} · {rms.length}회 세션
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2.5 shrink-0">
                   {delta !== 0 && rms.length > 1 && (
                     <span className="text-xs font-semibold tabular-nums"
-                      style={{ color: delta > 0 ? "#00C8FF" : "#f87171" }}>
+                      style={{ color: delta > 0 ? "var(--accent)" : "#f87171" }}>
                       {delta > 0 ? "+" : ""}{delta.toFixed(1)}
                     </span>
                   )}

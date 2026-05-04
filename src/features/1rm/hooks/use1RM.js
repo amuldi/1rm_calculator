@@ -3,7 +3,7 @@ import { useWorkoutStore } from "@/store/workoutStore";
 import { useGoalStore } from "@/store/goalStore";
 import { useUIStore } from "@/store/uiStore";
 import { calculate1RM, calculateAll1RM } from "../utils/formulas";
-import { convertWeight } from "@/lib/utils";
+import { convertWeight, getDisplayWeightFromKg, getRecordRMKg } from "@/lib/utils";
 
 function validate(exerciseId, weight, reps) {
   const errs = {};
@@ -21,25 +21,44 @@ export function use1RM() {
   const [exerciseId, setExerciseId] = useState("");
   const [weight, setWeight] = useState("");
   const [reps, setReps] = useState("");
-  const [result, setResult] = useState(null);
-  const [allResults, setAllResults] = useState(null);
+  const [resultKg, setResultKg] = useState(null);
+  const [allResultsKg, setAllResultsKg] = useState(null);
+  const [resultMeta, setResultMeta] = useState(null);
   const [errors, setErrors] = useState({});
 
   const { unit, selectedFormula, setFormula } = useUIStore();
   const { addRecord, history } = useWorkoutStore();
   const { getGoal, getProgress } = useGoalStore();
 
-  const currentGoal = useMemo(() => getGoal(exerciseId), [exerciseId, getGoal]);
+  const display = useCallback(
+    (valueKg) => getDisplayWeightFromKg(valueKg, unit),
+    [unit]
+  );
+
+  const result = useMemo(
+    () => (resultKg == null ? null : display(resultKg)),
+    [display, resultKg]
+  );
+
+  const allResults = useMemo(
+    () => allResultsKg?.map((formula) => ({ ...formula, value: display(formula.value) })) ?? null,
+    [allResultsKg, display]
+  );
+
+  const currentGoal = useMemo(() => getGoal(exerciseId, unit), [exerciseId, getGoal, unit]);
 
   const currentPR = useMemo(() => {
     if (!exerciseId) return null;
     const records = history.filter((r) => r.exerciseId === exerciseId);
     if (!records.length) return null;
-    return records.reduce((max, r) => (r.rm > max.rm ? r : max), records[0]);
+    return records.reduce(
+      (max, record) => (getRecordRMKg(record) > getRecordRMKg(max) ? record : max),
+      records[0]
+    );
   }, [exerciseId, history]);
 
   const goalProgress = useMemo(
-    () => getProgress(exerciseId, currentPR?.rm),
+    () => getProgress(exerciseId, currentPR ? getRecordRMKg(currentPR) : null),
     [exerciseId, currentPR, getProgress]
   );
 
@@ -57,30 +76,33 @@ export function use1RM() {
 
     const rmKg = calculate1RM(weightKg, r, selectedFormula);
     const allKg = calculateAll1RM(weightKg, r);
+    const previous = history.filter((record) => record.exerciseId === exerciseId);
+    const previousBestKg = previous.length
+      ? Math.max(...previous.map((record) => getRecordRMKg(record)))
+      : null;
+    const isPR = previousBestKg == null || rmKg >= previousBestKg;
 
-    const display = (v) =>
-      unit === "lb" ? convertWeight(v, "kg", "lb") : parseFloat(v.toFixed(1));
-
-    const displayRM = display(rmKg);
-    const displayAll = allKg?.map((f) => ({ ...f, value: display(f.value) }));
-
-    setResult(displayRM);
-    setAllResults(displayAll);
-
-    addRecord({
+    const record = addRecord({
       exerciseId,
       weight: w,
+      weightKg,
       reps: r,
-      rm: displayRM,
+      rm: display(rmKg),
+      rmKg,
       unit,
       formula: selectedFormula,
       date: new Date().toISOString(),
     });
-  }, [exerciseId, weight, reps, unit, selectedFormula, addRecord]);
+
+    setResultKg(rmKg);
+    setAllResultsKg(allKg);
+    setResultMeta({ recordId: record.id, isPR });
+  }, [addRecord, display, exerciseId, history, reps, selectedFormula, unit, weight]);
 
   const reset = useCallback(() => {
-    setResult(null);
-    setAllResults(null);
+    setResultKg(null);
+    setAllResultsKg(null);
+    setResultMeta(null);
     setErrors({});
   }, []);
 
@@ -92,6 +114,7 @@ export function use1RM() {
     errors,
     unit, selectedFormula, setFormula,
     currentGoal, currentPR, goalProgress,
+    isPR: Boolean(resultMeta?.isPR),
     calculate, reset,
   };
 }

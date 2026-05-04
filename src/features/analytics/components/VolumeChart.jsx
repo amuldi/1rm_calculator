@@ -5,7 +5,7 @@ import {
 } from "recharts";
 import { format, parseISO } from "date-fns";
 
-const ACCENT = "#00C8FF";
+const ACCENT = "#21D6A3";
 
 const Tip = ({ active, payload }) => {
   if (!active || !payload?.length) return null;

@@ -13,8 +13,8 @@ export default defineConfig({
         name: "1RM 계산기",
         short_name: "1RM 계산기",
         description: "단순하고 직관적인 1RM 계산 및 운동 기록 앱.",
-        theme_color: "#080808",
-        background_color: "#080808",
+        theme_color: "#0d0f0e",
+        background_color: "#0d0f0e",
         display: "standalone",
         icons: [
           { src: "/icon_192x192.png", sizes: "192x192", type: "image/png" },

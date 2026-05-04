@@ -1,8 +1,39 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
-  darkMode: "media",
+  content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html"],
+  darkMode: "class",
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        accent: "#21D6A3",
+        sky: {
+          neon: "#21D6A3",
+          glow: "rgba(33,214,163,0.35)",
+          dim:  "rgba(33,214,163,0.15)",
+          faint:"rgba(33,214,163,0.08)",
+        },
+        navy: {
+          950: "#0d0f0e",
+          900: "#141715",
+          850: "#191d1b",
+          800: "#202622",
+          700: "#2a332d",
+        },
+      },
+      fontFamily: {
+        sans: ["Pretendard", "DM Sans", "system-ui", "sans-serif"],
+      },
+      animation: {
+        "fade-in":  "fadeIn 0.4s ease-out forwards",
+        "slide-up": "slideUp 0.45s cubic-bezier(0.22,1,0.36,1) forwards",
+        "glow-pulse": "glowPulse 2s ease-in-out infinite",
+      },
+      keyframes: {
+        fadeIn:    { from: { opacity: "0" }, to: { opacity: "1" } },
+        slideUp:   { from: { opacity: "0", transform: "translateY(16px)" }, to: { opacity: "1", transform: "translateY(0)" } },
+        glowPulse: { "0%,100%": { boxShadow: "0 0 12px rgba(33,214,163,0.2)" }, "50%": { boxShadow: "0 0 28px rgba(33,214,163,0.45)" } },
+      },
+    },
   },
   plugins: [],
 };

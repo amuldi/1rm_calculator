@@ -28,8 +28,8 @@ export default function TopNav() {
       <header
         className="fixed top-0 left-0 right-0 z-50 h-14"
         style={{
-          background: "rgba(6,9,18,0.90)",
-          borderBottom: "1px solid rgba(0,200,255,0.10)",
+          background: "var(--nav-bg)",
+          borderBottom: "1px solid var(--nav-border)",
           backdropFilter: "blur(20px)",
         }}
       >
@@ -90,7 +90,7 @@ export default function TopNav() {
                   className="px-3 py-1 rounded-md text-xs font-bold tracking-wider uppercase transition-all"
                   style={{
                     background: unit === u ? "var(--accent)" : "transparent",
-                    color: unit === u ? "#060912" : "var(--text-2)",
+                    color: unit === u ? "#0d0f0e" : "var(--text-2)",
                   }}
                 >
                   {u}
@@ -100,6 +100,7 @@ export default function TopNav() {
 
             {/* Dark mode */}
             <button
+              aria-label={isDark ? "라이트 모드로 전환" : "다크 모드로 전환"}
               onClick={toggle}
               className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
               style={{ color: "var(--text-2)" }}
@@ -130,7 +131,7 @@ export default function TopNav() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-40 md:hidden"
-              style={{ background: "rgba(6,9,18,0.75)", backdropFilter: "blur(8px)" }}
+              style={{ background: "var(--overlay)", backdropFilter: "blur(8px)" }}
               onClick={() => setDrawerOpen(false)}
             />
             <motion.div
@@ -189,7 +190,7 @@ export default function TopNav() {
                       className="flex-1 py-2 rounded-md text-xs font-bold tracking-wider uppercase transition-all"
                       style={{
                         background: unit === u ? "var(--accent)" : "transparent",
-                        color: unit === u ? "#060912" : "var(--text-2)",
+                        color: unit === u ? "#0d0f0e" : "var(--text-2)",
                       }}
                     >
                       {u}

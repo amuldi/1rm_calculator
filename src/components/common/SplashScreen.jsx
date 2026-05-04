@@ -19,9 +19,9 @@ export default function SplashScreen() {
       >
         {/* Icon */}
         <motion.div
-          animate={{ boxShadow: ["0 0 12px rgba(0,200,255,0.3)", "0 0 32px rgba(0,200,255,0.6)", "0 0 12px rgba(0,200,255,0.3)"] }}
+          animate={{ boxShadow: ["0 0 12px rgba(33,214,163,0.24)", "0 0 32px rgba(33,214,163,0.42)", "0 0 12px rgba(33,214,163,0.24)"] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="w-20 h-20 rounded-2xl flex items-center justify-center"
+          className="w-20 h-20 rounded-lg flex items-center justify-center"
           style={{
             background: "var(--accent-faint)",
             border: "1px solid var(--accent-border)",

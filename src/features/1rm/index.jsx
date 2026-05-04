@@ -1,10 +1,9 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Calculator } from "./components/Calculator";
 import { ResultCard } from "./components/ResultCard";
 import { GoalSetter } from "./components/GoalSetter";
 import { RecordList } from "./components/RecordList";
 import { use1RM } from "./hooks/use1RM";
-import { useWorkoutStore } from "@/store/workoutStore";
 
 export default function OneRMPage() {
   const {
@@ -14,17 +13,9 @@ export default function OneRMPage() {
     result, allResults,
     errors,
     currentGoal, goalProgress,
+    isPR,
     calculate,
   } = use1RM();
-
-  const { history } = useWorkoutStore();
-
-  const isPR = useMemo(() => {
-    if (result == null || !exerciseId) return false;
-    const prev = history.filter((r) => r.exerciseId === exerciseId).slice(1);
-    if (!prev.length) return true;
-    return result >= Math.max(...prev.map((r) => r.rm));
-  }, [result, exerciseId, history]);
 
   return (
     <div className="min-h-screen px-4 py-8" style={{ background: "var(--bg)" }}>

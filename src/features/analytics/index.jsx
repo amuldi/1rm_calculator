@@ -6,10 +6,15 @@ import { StrengthCurve } from "./components/StrengthCurve";
 import { TrendSummary } from "./components/TrendSummary";
 import { useWorkoutStore } from "@/store/workoutStore";
 import { useUIStore } from "@/store/uiStore";
-import { getVolumeByDate } from "@/lib/utils";
+import {
+  getDisplayWeightFromKg,
+  getRecordRMKg,
+  getRecordVolume,
+  getVolumeByDate,
+} from "@/lib/utils";
 
 const PERIODS = [
-  { label: "7일",  value: 7 },
+  { label: "7일", value: 7 },
   { label: "30일", value: 30 },
   { label: "3개월", value: 90 },
   { label: "전체", value: 0 },
@@ -26,7 +31,7 @@ export default function AnalyticsPage() {
     return history.filter((r) => new Date(r.date).getTime() >= cutoff);
   }, [history, period]);
 
-  const volumeData     = useMemo(() => getVolumeByDate(filtered), [filtered]);
+  const volumeData = useMemo(() => getVolumeByDate(filtered, unit), [filtered, unit]);
   const groupedHistory = useMemo(() => {
     const groups = {};
     for (const r of filtered) {
@@ -39,35 +44,35 @@ export default function AnalyticsPage() {
   const summary = useMemo(() => {
     if (!filtered.length) return null;
     const sessions = new Set(filtered.map((r) => r.date?.split("T")[0])).size;
-    const volume   = Math.round(filtered.reduce((s, r) => s + r.weight * r.reps, 0));
-    const avgRM    = (filtered.reduce((s, r) => s + r.rm, 0) / filtered.length).toFixed(1);
+    const volume = Math.round(filtered.reduce((sum, record) => sum + getRecordVolume(record, unit), 0));
+    const avgRMKg = filtered.reduce((sum, record) => sum + getRecordRMKg(record), 0) / filtered.length;
+    const avgRM = getDisplayWeightFromKg(avgRMKg, unit).toFixed(1);
     return { sessions, volume, avgRM };
-  }, [filtered]);
+  }, [filtered, unit]);
 
   return (
     <div className="min-h-screen px-4 py-8" style={{ background: "var(--bg)" }}>
       <div className="max-w-2xl mx-auto space-y-5">
 
-        {/* Header + period picker */}
-        <div className="flex items-end justify-between">
+        <div className="flex items-end justify-between gap-4">
           <div>
             <h1 className="text-2xl font-black" style={{ color: "var(--text-1)" }}>분석</h1>
             <p className="text-sm mt-0.5" style={{ color: "var(--text-2)" }}>기간별 운동 통계</p>
           </div>
-          <div className="flex gap-1 p-0.5 rounded-xl" style={{ background: "rgba(255,255,255,0.06)" }}>
+          <div className="flex gap-1 p-0.5 rounded-lg" style={{ background: "rgba(255,255,255,0.06)" }}>
             {PERIODS.map((p) => (
               <button
                 key={p.value}
                 onClick={() => setPeriod(p.value)}
-                className="relative px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+                className="relative px-3 py-1.5 rounded-md text-xs font-semibold transition-all"
                 style={{
-                  color: period === p.value ? "#060912" : "var(--text-2)",
+                  color: period === p.value ? "#0d0f0e" : "var(--text-2)",
                 }}
               >
                 {period === p.value && (
                   <motion.div
                     layoutId="period-pill"
-                    className="absolute inset-0 rounded-lg"
+                    className="absolute inset-0 rounded-md"
                     style={{ background: "var(--accent)" }}
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
                   />
@@ -90,11 +95,10 @@ export default function AnalyticsPage() {
           </motion.div>
         ) : (
           <>
-            {/* Summary strip */}
             {summary && (
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: "세션",    value: summary.sessions },
+                  { label: "세션", value: summary.sessions },
                   { label: "총 볼륨", value: summary.volume.toLocaleString(), unit },
                   { label: "평균 1RM", value: summary.avgRM, unit },
                 ].map((s, i) => (
@@ -118,8 +122,8 @@ export default function AnalyticsPage() {
             )}
 
             {volumeData.length > 1 && <VolumeChart data={volumeData} unit={unit} />}
-            {Object.keys(groupedHistory).length > 0 && <StrengthCurve groupedHistory={groupedHistory} />}
-            <TrendSummary groupedHistory={groupedHistory} />
+            {Object.keys(groupedHistory).length > 0 && <StrengthCurve groupedHistory={groupedHistory} unit={unit} />}
+            <TrendSummary groupedHistory={groupedHistory} unit={unit} />
           </>
         )}
       </div>
