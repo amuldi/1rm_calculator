@@ -3,12 +3,44 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  :root,
+  html.light {
     --accent:        #00c8ff;
     --accent-border: rgba(0, 200, 255, 0.26);
     --accent-faint:  rgba(0, 200, 255, 0.11);
     --accent-glow:   rgba(0, 200, 255, 0.30);
     --gold:          #f4bd50;
+    --bg:            #f6f7f2;
+    --surface:       #ecefe7;
+    --card:          #fffefa;
+    --card-2:        #f4f6ef;
+    --text-1:        #111713;
+    --text-2:        #546158;
+    --text-3:        #8b958d;
+    --border:        rgba(0, 125, 190, 0.16);
+    --border-subtle: rgba(17, 23, 19, 0.08);
+    --nav-bg:        rgba(255, 254, 250, 0.90);
+    --nav-border:    rgba(17, 23, 19, 0.08);
+    --overlay:       rgba(17, 23, 19, 0.34);
+    --control-bg:    rgba(17, 23, 19, 0.055);
+    --control-active: rgba(0, 125, 190, 0.10);
+    --control-hover: rgba(0, 125, 190, 0.08);
+    --row-bg:        rgba(17, 23, 19, 0.035);
+    --row-hover:     rgba(0, 125, 190, 0.08);
+    --muted-fill:    rgba(17, 23, 19, 0.08);
+    --chart-grid:    rgba(17, 23, 19, 0.08);
+    --chart-cursor:  rgba(0, 125, 190, 0.14);
+    --text-on-accent: #0d0f0e;
+    --shadow-soft:   0 18px 44px rgba(31, 42, 34, 0.08);
+    --shadow-menu:   0 18px 44px rgba(31, 42, 34, 0.14);
+    --card-sheen-1:  rgba(255, 255, 255, 0.72);
+    --card-sheen-2:  rgba(255, 255, 255, 0.28);
+    --red:           #f87171;
+    --red-border:    rgba(248, 113, 113, 0.25);
+    --red-faint:     rgba(248, 113, 113, 0.08);
+  }
+
+  html.dark {
     --bg:            #0d0f0e;
     --surface:       #141715;
     --card:          #191d1b;
@@ -29,42 +61,10 @@
     --muted-fill:    rgba(255, 255, 255, 0.07);
     --chart-grid:    rgba(255, 255, 255, 0.04);
     --chart-cursor:  rgba(0, 200, 255, 0.18);
-    --text-on-accent: #0d0f0e;
     --shadow-soft:   0 18px 50px rgba(0, 0, 0, 0.16);
     --shadow-menu:   0 24px 60px rgba(0, 0, 0, 0.36);
     --card-sheen-1:  rgba(255, 255, 255, 0.035);
     --card-sheen-2:  rgba(255, 255, 255, 0.012);
-    --red:           #f87171;
-    --red-border:    rgba(248, 113, 113, 0.25);
-    --red-faint:     rgba(248, 113, 113, 0.08);
-  }
-
-  html.light {
-    --bg:      #f6f7f2;
-    --surface: #ecefe7;
-    --card:    #fffefa;
-    --card-2:  #f4f6ef;
-    --text-1:  #111713;
-    --text-2:  #546158;
-    --text-3:  #8b958d;
-    --border:  rgba(0, 125, 190, 0.16);
-    --border-subtle: rgba(17, 23, 19, 0.08);
-    --nav-bg: rgba(255, 254, 250, 0.90);
-    --nav-border: rgba(17, 23, 19, 0.08);
-    --overlay: rgba(17, 23, 19, 0.34);
-    --control-bg: rgba(17, 23, 19, 0.055);
-    --control-active: rgba(0, 125, 190, 0.10);
-    --control-hover: rgba(0, 125, 190, 0.08);
-    --row-bg: rgba(17, 23, 19, 0.035);
-    --row-hover: rgba(0, 125, 190, 0.08);
-    --muted-fill: rgba(17, 23, 19, 0.08);
-    --chart-grid: rgba(17, 23, 19, 0.08);
-    --chart-cursor: rgba(0, 125, 190, 0.14);
-    --text-on-accent: #0d0f0e;
-    --shadow-soft: 0 18px 44px rgba(31, 42, 34, 0.08);
-    --shadow-menu: 0 18px 44px rgba(31, 42, 34, 0.14);
-    --card-sheen-1: rgba(255, 255, 255, 0.72);
-    --card-sheen-2: rgba(255, 255, 255, 0.28);
   }
 
   * {
@@ -74,7 +74,7 @@
 
   html {
     scroll-behavior: smooth;
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   html.light { color-scheme: light; }
