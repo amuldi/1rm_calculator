@@ -15,7 +15,7 @@ export function PRBoard({ prMap, unit }) {
       <div className="card p-6 text-center space-y-3">
         <div
           className="w-10 h-10 rounded-lg flex items-center justify-center mx-auto"
-          style={{ background: "rgba(255,255,255,0.04)" }}
+          style={{ background: "var(--control-bg)" }}
         >
           <Trophy size={20} style={{ color: "var(--text-3)" }} />
         </div>

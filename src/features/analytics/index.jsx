@@ -59,14 +59,14 @@ export default function AnalyticsPage() {
             <h1 className="text-2xl font-black" style={{ color: "var(--text-1)" }}>분석</h1>
             <p className="text-sm mt-0.5" style={{ color: "var(--text-2)" }}>기간별 운동 통계</p>
           </div>
-          <div className="flex gap-1 p-0.5 rounded-lg" style={{ background: "rgba(255,255,255,0.06)" }}>
+          <div className="flex gap-1 p-0.5 rounded-lg" style={{ background: "var(--control-bg)" }}>
             {PERIODS.map((p) => (
               <button
                 key={p.value}
                 onClick={() => setPeriod(p.value)}
                 className="relative px-3 py-1.5 rounded-md text-xs font-semibold transition-all"
                 style={{
-                  color: period === p.value ? "#0d0f0e" : "var(--text-2)",
+                  color: period === p.value ? "var(--text-on-accent)" : "var(--text-2)",
                 }}
               >
                 {period === p.value && (

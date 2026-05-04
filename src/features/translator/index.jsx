@@ -23,7 +23,7 @@ function ExercisePicker({ value, onChange, error }) {
               onClick={() => onChange(lift.id)}
               className="rounded-2xl p-3 text-left transition-all"
               style={{
-                background: active ? "var(--accent-faint)" : "rgba(255,255,255,0.025)",
+                background: active ? "var(--accent-faint)" : "var(--row-bg)",
                 border: `1px solid ${active ? "var(--accent-border)" : "var(--border-subtle)"}`,
               }}
             >
@@ -39,7 +39,7 @@ function ExercisePicker({ value, onChange, error }) {
                 <div
                   className="w-9 h-9 rounded-xl flex items-center justify-center text-[11px] font-black"
                   style={{
-                    background: active ? "rgba(0,200,255,0.14)" : "rgba(255,255,255,0.04)",
+                    background: active ? "var(--accent-faint)" : "var(--control-bg)",
                     color: active ? "var(--accent)" : "var(--text-2)",
                   }}
                 >
@@ -168,7 +168,7 @@ export default function TranslatorPage() {
             </div>
             <div
               className="hidden md:flex items-center gap-2 px-3 py-2 rounded-2xl"
-              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-subtle)" }}
+              style={{ background: "var(--row-bg)", border: "1px solid var(--border-subtle)" }}
             >
               <Scale size={15} style={{ color: "var(--accent)" }} />
               <span className="text-xs font-semibold" style={{ color: "var(--text-2)" }}>실전적인 %1RM 기반 계산</span>
@@ -198,7 +198,7 @@ export default function TranslatorPage() {
 
           <div
             className="rounded-2xl p-4"
-            style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-subtle)" }}
+            style={{ background: "var(--row-bg)", border: "1px solid var(--border-subtle)" }}
           >
             <div className="flex items-center gap-2 mb-2">
               <Repeat2 size={15} style={{ color: "var(--accent)" }} />

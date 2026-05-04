@@ -42,14 +42,14 @@ export function RecordList() {
           <Clock size={14} style={{ color: "var(--text-2)" }} />
           <span className="section-label">기록 목록</span>
         </div>
-        <div className="flex gap-0.5 p-0.5 rounded-lg" style={{ background: "rgba(255,255,255,0.05)" }}>
+        <div className="flex gap-0.5 p-0.5 rounded-lg" style={{ background: "var(--control-bg)" }}>
           {FILTER_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               onClick={() => setFilter(opt.value)}
               className="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all"
               style={{
-                background: filter === opt.value ? "rgba(255,255,255,0.12)" : "transparent",
+                background: filter === opt.value ? "var(--control-active)" : "transparent",
                 color: filter === opt.value ? "var(--text-1)" : "var(--text-3)",
               }}
             >
@@ -76,7 +76,7 @@ export function RecordList() {
                 <button
                   onClick={() => setExpanded(isOpen ? null : ex.id)}
                   className="w-full flex items-center justify-between gap-3 px-5 py-3.5 transition-colors"
-                  onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
+                  onMouseEnter={(e) => e.currentTarget.style.background = "var(--control-hover)"}
                   onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
                 >
                   <div className="flex items-center gap-3 min-w-0">
@@ -134,7 +134,7 @@ export function RecordList() {
                               exit={{ opacity: 0, x: -16 }}
                               className="flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors"
                               style={{
-                                background: isPR ? "var(--accent-faint)" : "rgba(255,255,255,0.03)",
+                                background: isPR ? "var(--accent-faint)" : "var(--row-bg)",
                                 border: `1px solid ${isPR ? "var(--accent-border)" : "transparent"}`,
                               }}
                             >

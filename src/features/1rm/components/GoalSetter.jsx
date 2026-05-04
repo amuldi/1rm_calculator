@@ -59,7 +59,7 @@ export function GoalSetter({ exerciseId }) {
                 <span>현재 최고 {currentBest} {unit}</span>
                 <span>목표 {currentGoal} {unit} · {progress}%</span>
               </div>
-              <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.07)" }}>
+              <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--muted-fill)" }}>
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}

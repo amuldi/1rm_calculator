@@ -39,9 +39,10 @@ function Dropdown({ value, onChange, options, placeholder, renderOption, renderS
             transition={{ duration: 0.15 }}
             className="absolute z-30 top-full left-0 right-0 mt-1.5 overflow-hidden shadow-2xl"
             style={{
-              background: "var(--card-2, var(--card))",
+              background: "var(--card)",
               border: "1px solid var(--border-subtle)",
-              borderRadius: "12px",
+              borderRadius: "8px",
+              boxShadow: "var(--shadow-menu)",
             }}
           >
             {options.map((opt) => (
@@ -55,7 +56,7 @@ function Dropdown({ value, onChange, options, placeholder, renderOption, renderS
                   color:      value === opt.id ? "var(--accent)" : "var(--text-1)",
                   borderBottom: "1px solid var(--border-subtle)",
                 }}
-                onMouseEnter={(e) => { if (value !== opt.id) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                onMouseEnter={(e) => { if (value !== opt.id) e.currentTarget.style.background = "var(--control-hover)"; }}
                 onMouseLeave={(e) => { if (value !== opt.id) e.currentTarget.style.background = "transparent"; }}
               >
                 {renderOption(opt)}
@@ -94,7 +95,8 @@ function NumberField({ label, value, onChange, placeholder, hint, suffix, min, m
                   style={{
                     background: "var(--card)",
                     border: "1px solid var(--border-subtle)",
-                    borderRadius: "12px",
+                    borderRadius: "8px",
+                    boxShadow: "var(--shadow-menu)",
                   }}
                 >
                   <p className="text-xs leading-relaxed" style={{ color: "var(--text-1)" }}>{hint}</p>
@@ -154,7 +156,7 @@ export function Calculator({ onCalculate, exerciseId, setExerciseId, weight, set
       {/* Unit toggle */}
       <div className="flex items-center justify-between">
         <span className="section-label">1RM 계산기</span>
-        <div className="flex gap-0.5 p-0.5 rounded-lg" style={{ background: "rgba(255,255,255,0.06)" }}>
+        <div className="flex gap-0.5 p-0.5 rounded-lg" style={{ background: "var(--control-bg)" }}>
           {["kg", "lb"].map((u) => (
             <button
               key={u}
@@ -162,7 +164,7 @@ export function Calculator({ onCalculate, exerciseId, setExerciseId, weight, set
               className="px-3 py-1 rounded-md text-xs font-bold tracking-wider uppercase transition-all"
               style={{
                 background: unit === u ? "var(--accent)" : "transparent",
-                color:      unit === u ? "#0d0f0e" : "var(--text-2)",
+                color:      unit === u ? "var(--text-on-accent)" : "var(--text-2)",
               }}
             >
               {u}

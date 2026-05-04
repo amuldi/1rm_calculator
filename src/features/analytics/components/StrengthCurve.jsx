@@ -80,7 +80,7 @@ export function StrengthCurve({ groupedHistory, unit }) {
                     borderColor: CHART_COLORS[i % CHART_COLORS.length],
                     color: CHART_COLORS[i % CHART_COLORS.length],
                   }
-                : { borderColor: "rgba(255,255,255,0.08)", color: "var(--text-3)" }
+                : { borderColor: "var(--border-subtle)", color: "var(--text-3)" }
             }
           >
             {ex.abbr} {ex.labelKo}
@@ -91,7 +91,7 @@ export function StrengthCurve({ groupedHistory, unit }) {
       <div className="h-52">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" vertical={false} />
             <XAxis
               dataKey="label"
               tick={{ fill: "var(--text-3)", fontSize: 11 }}
@@ -104,7 +104,7 @@ export function StrengthCurve({ groupedHistory, unit }) {
               axisLine={false}
               tickLine={false}
             />
-            <Tooltip content={<Tip />} cursor={{ stroke: "rgba(255,255,255,0.06)" }} />
+            <Tooltip content={<Tip />} cursor={{ stroke: "var(--chart-cursor)" }} />
             {exercises.map((ex, i) => (
               <Line
                 key={ex.id}

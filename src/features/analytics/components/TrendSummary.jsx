@@ -102,7 +102,7 @@ export function TrendSummary({ groupedHistory, unit }) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.06 }}
                 className="flex items-center justify-between gap-3 px-5 py-3.5 transition-colors"
-                onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
+                onMouseEnter={(e) => e.currentTarget.style.background = "var(--control-hover)"}
                 onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
               >
                 <div className="flex items-center gap-3 min-w-0">

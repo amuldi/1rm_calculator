@@ -136,7 +136,7 @@ export default function ProfilePage() {
         <div className="card px-5 py-1">
           <p className="section-label pt-4 pb-2">환경설정</p>
           <Row icon={Scale} label="무게 단위">
-            <div className="flex gap-0.5 p-0.5 rounded-lg" style={{ background: "rgba(255,255,255,0.06)" }}>
+            <div className="flex gap-0.5 p-0.5 rounded-lg" style={{ background: "var(--control-bg)" }}>
               {["kg", "lb"].map((u) => (
                 <button
                   key={u}
@@ -144,7 +144,7 @@ export default function ProfilePage() {
                   className="px-4 py-1.5 rounded-md text-xs font-bold transition-all"
                   style={{
                     background: unit === u ? "var(--accent)" : "transparent",
-                    color:      unit === u ? "#0d0f0e" : "var(--text-2)",
+                    color:      unit === u ? "var(--text-on-accent)" : "var(--text-2)",
                   }}
                 >
                   {u}
@@ -156,7 +156,7 @@ export default function ProfilePage() {
             <button
               onClick={toggle}
               className="relative w-11 h-6 rounded-full transition-colors duration-300"
-              style={{ background: isDark ? "var(--accent)" : "rgba(255,255,255,0.15)" }}
+              style={{ background: isDark ? "var(--accent)" : "var(--control-active)" }}
             >
               <span
                 className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-300"

@@ -81,7 +81,7 @@ export default function TopNav() {
             {/* Unit */}
             <div
               className="hidden sm:flex gap-0.5 p-0.5 rounded-lg"
-              style={{ background: "rgba(255,255,255,0.05)" }}
+              style={{ background: "var(--control-bg)" }}
             >
               {["kg", "lb"].map((u) => (
                 <button
@@ -90,7 +90,7 @@ export default function TopNav() {
                   className="px-3 py-1 rounded-md text-xs font-bold tracking-wider uppercase transition-all"
                   style={{
                     background: unit === u ? "var(--accent)" : "transparent",
-                    color: unit === u ? "#0d0f0e" : "var(--text-2)",
+                    color: unit === u ? "var(--text-on-accent)" : "var(--text-2)",
                   }}
                 >
                   {u}
@@ -181,7 +181,7 @@ export default function TopNav() {
               <div className="p-4" style={{ borderTop: "1px solid var(--border-subtle)" }}>
                 <div
                   className="flex gap-0.5 p-0.5 rounded-lg"
-                  style={{ background: "rgba(255,255,255,0.05)" }}
+                  style={{ background: "var(--control-bg)" }}
                 >
                   {["kg", "lb"].map((u) => (
                     <button
@@ -190,7 +190,7 @@ export default function TopNav() {
                       className="flex-1 py-2 rounded-md text-xs font-bold tracking-wider uppercase transition-all"
                       style={{
                         background: unit === u ? "var(--accent)" : "transparent",
-                        color: unit === u ? "#0d0f0e" : "var(--text-2)",
+                        color: unit === u ? "var(--text-on-accent)" : "var(--text-2)",
                       }}
                     >
                       {u}

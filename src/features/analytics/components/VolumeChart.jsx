@@ -15,7 +15,7 @@ const Tip = ({ active, payload }) => {
       style={{
         background: "var(--card)",
         border: "1px solid var(--accent-border)",
-        borderRadius: "12px",
+        borderRadius: "8px",
       }}
     >
       <p className="text-xs mb-1" style={{ color: "var(--text-2)" }}>{payload[0]?.payload?.dateLabel}</p>
@@ -54,7 +54,7 @@ export function VolumeChart({ data, unit }) {
                 <stop offset="100%" stopColor={ACCENT} stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" vertical={false} />
             <XAxis
               dataKey="dateLabel"
               tick={{ fill: "var(--text-3)", fontSize: 11 }}
@@ -68,7 +68,7 @@ export function VolumeChart({ data, unit }) {
               tickLine={false}
               tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
             />
-            <Tooltip content={<Tip />} cursor={{ stroke: "rgba(0,200,255,0.15)", strokeWidth: 1 }} />
+            <Tooltip content={<Tip />} cursor={{ stroke: "var(--chart-cursor)", strokeWidth: 1 }} />
             <Area
               type="monotone"
               dataKey="volume"

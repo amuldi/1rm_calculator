@@ -62,7 +62,7 @@ export function GoalProgress({ goals, prMap, unit }) {
 
               <div
                 className="h-1.5 rounded-full overflow-hidden"
-                style={{ background: "rgba(255,255,255,0.07)" }}
+                style={{ background: "var(--muted-fill)" }}
               >
                 <motion.div
                   initial={{ width: 0 }}

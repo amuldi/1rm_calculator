@@ -53,14 +53,14 @@ export function ResultCard({ result, allResults, isPR, goalProgress, currentGoal
               <span>현재</span>
               <span>목표 {currentGoal} {unit} · {goalProgress}%</span>
             </div>
-            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.07)" }}>
+            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--muted-fill)" }}>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${goalProgress}%` }}
                 transition={{ duration: 0.9, ease: "easeOut" }}
                 className="h-full rounded-full"
                 style={{
-                  background: goalProgress >= 100 ? "var(--accent)" : "linear-gradient(to right, var(--accent), rgba(0,200,255,0.4))",
+                  background: goalProgress >= 100 ? "var(--accent)" : "linear-gradient(to right, var(--accent), rgba(244,189,80,0.65))",
                 }}
               />
             </div>
@@ -83,7 +83,7 @@ export function ResultCard({ result, allResults, isPR, goalProgress, currentGoal
                       {f.value} <span className="text-xs font-normal" style={{ color: "var(--text-2)" }}>{unit}</span>
                     </span>
                   </div>
-                  <div className="h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+                  <div className="h-1 rounded-full overflow-hidden" style={{ background: "var(--muted-fill)" }}>
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${pct}%` }}
@@ -104,7 +104,7 @@ export function ResultCard({ result, allResults, isPR, goalProgress, currentGoal
         <button
           onClick={() => setShowTable((v) => !v)}
           className="w-full flex items-center justify-between px-5 py-4 transition-colors"
-          onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
+          onMouseEnter={(e) => e.currentTarget.style.background = "var(--control-hover)"}
           onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
         >
           <div className="flex items-center gap-2">
@@ -131,15 +131,15 @@ export function ResultCard({ result, allResults, isPR, goalProgress, currentGoal
                   <div
                     key={row.pct}
                     className="flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors"
-                    style={{ background: "rgba(255,255,255,0.03)" }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}
-                    onMouseLeave={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.03)"}
+                    style={{ background: "var(--row-bg)" }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "var(--row-hover)"}
+                    onMouseLeave={(e) => e.currentTarget.style.background = "var(--row-bg)"}
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-xs font-bold w-8 tabular-nums" style={{ color: "var(--text-2)" }}>
                         {row.pct}%
                       </span>
-                      <div className="w-16 h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.07)" }}>
+                      <div className="w-16 h-1 rounded-full overflow-hidden" style={{ background: "var(--muted-fill)" }}>
                         <div
                           className="h-full rounded-full"
                           style={{ width: `${row.pct}%`, background: "var(--accent)", opacity: 0.6 }}

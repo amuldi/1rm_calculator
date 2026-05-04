@@ -21,6 +21,19 @@
     --nav-bg:        rgba(13, 15, 14, 0.92);
     --nav-border:    rgba(33, 214, 163, 0.16);
     --overlay:       rgba(13, 15, 14, 0.72);
+    --control-bg:    rgba(255, 255, 255, 0.06);
+    --control-active: rgba(255, 255, 255, 0.12);
+    --control-hover: rgba(255, 255, 255, 0.04);
+    --row-bg:        rgba(255, 255, 255, 0.03);
+    --row-hover:     rgba(255, 255, 255, 0.05);
+    --muted-fill:    rgba(255, 255, 255, 0.07);
+    --chart-grid:    rgba(255, 255, 255, 0.04);
+    --chart-cursor:  rgba(33, 214, 163, 0.16);
+    --text-on-accent: #0d0f0e;
+    --shadow-soft:   0 18px 50px rgba(0, 0, 0, 0.16);
+    --shadow-menu:   0 24px 60px rgba(0, 0, 0, 0.36);
+    --card-sheen-1:  rgba(255, 255, 255, 0.035);
+    --card-sheen-2:  rgba(255, 255, 255, 0.012);
     --red:           #f87171;
     --red-border:    rgba(248, 113, 113, 0.25);
     --red-faint:     rgba(248, 113, 113, 0.08);
@@ -39,6 +52,19 @@
     --nav-bg: rgba(255, 254, 250, 0.90);
     --nav-border: rgba(17, 23, 19, 0.08);
     --overlay: rgba(17, 23, 19, 0.34);
+    --control-bg: rgba(17, 23, 19, 0.055);
+    --control-active: rgba(33, 142, 112, 0.12);
+    --control-hover: rgba(33, 142, 112, 0.08);
+    --row-bg: rgba(17, 23, 19, 0.035);
+    --row-hover: rgba(33, 142, 112, 0.08);
+    --muted-fill: rgba(17, 23, 19, 0.08);
+    --chart-grid: rgba(17, 23, 19, 0.08);
+    --chart-cursor: rgba(33, 142, 112, 0.14);
+    --text-on-accent: #0d0f0e;
+    --shadow-soft: 0 18px 44px rgba(31, 42, 34, 0.08);
+    --shadow-menu: 0 18px 44px rgba(31, 42, 34, 0.14);
+    --card-sheen-1: rgba(255, 255, 255, 0.72);
+    --card-sheen-2: rgba(255, 255, 255, 0.28);
   }
 
   * {
@@ -46,7 +72,13 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  html.light { color-scheme: light; }
+  html.dark { color-scheme: dark; }
 
   body {
     font-family: "Pretendard", "DM Sans", system-ui, sans-serif;
@@ -75,11 +107,11 @@
 
   .card-soft {
     background:
-      linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012)),
+      linear-gradient(180deg, var(--card-sheen-1), var(--card-sheen-2)),
       var(--card);
     border: 1px solid var(--border-subtle);
     border-radius: 8px;
-    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.16);
+    box-shadow: var(--shadow-soft);
   }
 
   .card-accent {
@@ -100,7 +132,7 @@
   .btn-accent {
     @apply btn;
     background: var(--accent);
-    color: #0d0f0e;
+    color: var(--text-on-accent);
     font-weight: 800;
   }
   .btn-accent:hover {
