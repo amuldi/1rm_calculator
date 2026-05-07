@@ -2,6 +2,10 @@
 
 웨이트 트레이닝 기록을 바탕으로 예상 1RM을 계산하고, PR·목표·볼륨 추이를 함께 관리하는 React 기반 웹앱입니다. 운동 종목을 선택하면 앱이 적합한 계산 공식을 자동으로 적용하므로, 사용자는 무게와 반복 횟수만 입력하면 됩니다.
 
+<p align="center">
+  <strong>웹 주소:</strong>
+  <a href="https://rm-calculator-3cf1d.web.app">https://rm-calculator-3cf1d.web.app</a>
+</p>
 
 <p align="center">
   <a href="https://rm-calculator-3cf1d.web.app"><img src="https://img.shields.io/badge/Live-Firebase-orange?logo=firebase" alt="Firebase 배포" /></a>
