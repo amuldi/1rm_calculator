@@ -155,6 +155,10 @@ npm run preview
 | PWA | vite-plugin-pwa |
 | 배포 | Firebase Hosting, Vercel |
 
+## 시스템 아키텍처
+
+![시스템 아키텍처](docs/images/system-architecture.svg)
+
 ## 프로젝트 구조
 
 ```text

@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="980" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f8fbff"/>
+      <stop offset="1" stop-color="#eef7f2"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00c8ff"/>
+      <stop offset="1" stop-color="#7c8cf8"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#1f2a22" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#00a8d8"/>
+    </marker>
+    <style>
+      .font { font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+      .title { font-size: 56px; font-weight: 900; fill: #111713; letter-spacing: 0; }
+      .sub { font-size: 22px; font-weight: 650; fill: #546158; }
+      .boxTitle { font-size: 25px; font-weight: 850; fill: #111713; }
+      .boxSub { font-size: 17px; font-weight: 650; fill: #546158; }
+      .label { font-size: 17px; font-weight: 850; fill: #007dbe; letter-spacing: .6px; }
+      .item { font-size: 17px; font-weight: 720; fill: #344039; }
+      .mono { font-size: 15px; font-weight: 750; fill: #546158; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="980" fill="url(#bg)"/>
+  <circle cx="1325" cy="130" r="230" fill="#00c8ff" opacity="0.08"/>
+  <circle cx="215" cy="845" r="230" fill="#f4bd50" opacity="0.10"/>
+
+  <g class="font">
+    <text x="90" y="104" class="label">SYSTEM ARCHITECTURE</text>
+    <text x="90" y="168" class="title">1RM 계산기 아키텍처</text>
+    <text x="90" y="212" class="sub">정적 호스팅 위에서 동작하는 React SPA이며, 계산과 데이터 저장은 브라우저 내부에서 처리합니다.</text>
+
+    <g filter="url(#shadow)">
+      <rect x="90" y="292" width="310" height="166" rx="24" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
+      <rect x="118" y="320" width="58" height="58" rx="18" fill="#eaf9ff"/>
+      <text x="137" y="357" font-size="22" font-weight="900" fill="#00a8d8">01</text>
+      <text x="118" y="406" class="boxTitle">사용자 브라우저</text>
+      <text x="118" y="438" class="boxSub">모바일/데스크톱에서 접속</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="485" y="268" width="630" height="214" rx="28" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
+      <rect x="520" y="300" width="70" height="70" rx="20" fill="url(#accent)"/>
+      <text x="615" y="324" class="label">FRONTEND APP</text>
+      <text x="615" y="358" class="boxTitle">React SPA + Vite + PWA</text>
+      <text x="615" y="390" class="boxSub">React Router + 공통 Layout</text>
+      <text x="615" y="417" class="boxSub">화면 전환과 PWA 셸 구성</text>
+      <rect x="520" y="430" width="148" height="36" rx="12" fill="#f4f6ef"/>
+      <text x="541" y="454" class="mono">Dashboard</text>
+      <rect x="682" y="430" width="148" height="36" rx="12" fill="#f4f6ef"/>
+      <text x="707" y="454" class="mono">Calculator</text>
+      <rect x="844" y="430" width="104" height="36" rx="12" fill="#f4f6ef"/>
+      <text x="871" y="454" class="mono">Profile</text>
+      <rect x="962" y="430" width="104" height="36" rx="12" fill="#f4f6ef"/>
+      <text x="987" y="454" class="mono">Charts</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="1200" y="292" width="310" height="166" rx="24" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
+      <rect x="1228" y="320" width="58" height="58" rx="18" fill="#fff4dc"/>
+      <text x="1247" y="357" font-size="22" font-weight="900" fill="#e39b22">02</text>
+      <text x="1228" y="406" class="boxTitle">정적 호스팅</text>
+      <text x="1228" y="438" class="boxSub">Firebase Hosting / Vercel</text>
+    </g>
+
+    <line x1="405" y1="375" x2="470" y2="375" stroke="#00a8d8" stroke-width="4" marker-end="url(#arrow)"/>
+    <line x1="1125" y1="375" x2="1185" y2="375" stroke="#00a8d8" stroke-width="4" marker-end="url(#arrow)"/>
+
+    <g filter="url(#shadow)">
+      <rect x="160" y="580" width="365" height="235" rx="26" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
+      <text x="192" y="631" class="label">STATE LAYER</text>
+      <text x="192" y="669" class="boxTitle">Zustand Stores</text>
+      <text x="192" y="710" class="item">workoutStore · 운동 기록</text>
+      <text x="192" y="742" class="item">goalStore · 목표 1RM</text>
+      <text x="192" y="774" class="item">uiStore · 단위/테마</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="620" y="580" width="360" height="235" rx="26" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
+      <text x="652" y="631" class="label">DOMAIN LOGIC</text>
+      <text x="652" y="669" class="boxTitle">계산 엔진과 유틸</text>
+      <text x="652" y="710" class="item">종목별 1RM 공식 자동 선택</text>
+      <text x="652" y="742" class="item">반복 중량 %1RM 테이블</text>
+      <text x="652" y="774" class="item">kg/lb 변환과 기록 정규화</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="1075" y="580" width="365" height="235" rx="26" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
+      <text x="1107" y="631" class="label">PERSISTENCE</text>
+      <text x="1107" y="669" class="boxTitle">Browser LocalStorage</text>
+      <text x="1107" y="710" class="item">회원가입 없이 로컬 저장</text>
+      <text x="1107" y="742" class="item">JSON 백업/복원 지원</text>
+      <text x="1107" y="774" class="item">서버 DB 없이 개인 기록 유지</text>
+    </g>
+
+    <line x1="690" y1="495" x2="342" y2="565" stroke="#00a8d8" stroke-width="3.5" marker-end="url(#arrow)"/>
+    <line x1="800" y1="495" x2="800" y2="565" stroke="#00a8d8" stroke-width="3.5" marker-end="url(#arrow)"/>
+    <line x1="910" y1="495" x2="1257" y2="565" stroke="#00a8d8" stroke-width="3.5" marker-end="url(#arrow)"/>
+    <line x1="532" y1="698" x2="605" y2="698" stroke="#00a8d8" stroke-width="3.5" marker-end="url(#arrow)"/>
+    <line x1="990" y1="698" x2="1060" y2="698" stroke="#00a8d8" stroke-width="3.5" marker-end="url(#arrow)"/>
+
+    <g>
+      <rect x="245" y="840" width="1110" height="58" rx="18" fill="#111713" opacity="0.92"/>
+      <text x="292" y="877" font-size="19" font-weight="800" fill="#fffefa">흐름: 사용자 입력 → React 화면 → 계산/상태 저장 → LocalStorage → 차트와 대시보드</text>
+    </g>
+  </g>
+</svg>
