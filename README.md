@@ -10,10 +10,6 @@
   <img src="https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white" alt="Vite 6" />
 </p>
 
-## 실행 화면
-
-아래 이미지는 README 설명을 위해 샘플 운동 기록을 넣고 촬영한 실제 웹 실행 화면입니다.
-
 ### 대시보드
 
 최근 1RM, 주간 볼륨, 종목별 PR, 목표 진행률을 한 화면에서 확인합니다.
