@@ -3,16 +3,21 @@ import { motion } from "framer-motion";
 import { Target, CheckCircle2 } from "lucide-react";
 import { EXERCISES } from "@/constants/exercises";
 import { clamp, getDisplayWeightFromKg, getGoalKg, getRecordRMKg } from "@/lib/utils";
+import { getGoalPlan } from "@/lib/goalPlanning";
 
 export function GoalProgress({ goals, prMap, unit }) {
   const items = EXERCISES.filter((ex) => goals[ex.id] != null).map((ex) => {
     const goalKg = getGoalKg(goals[ex.id]);
     const currentKg = prMap[ex.id] ? getRecordRMKg(prMap[ex.id]) : 0;
     const pct = goalKg ? clamp(Math.round((currentKg / goalKg) * 100), 0, 100) : 0;
+    const plan = getGoalPlan(goals[ex.id], currentKg, unit);
     return {
       ...ex,
       goal: getDisplayWeightFromKg(goalKg, unit),
       current: getDisplayWeightFromKg(currentKg, unit),
+      remaining: getDisplayWeightFromKg(Math.max(0, goalKg - currentKg), unit),
+      targetDate: typeof goals[ex.id]?.targetDate === "string" ? goals[ex.id].targetDate : "",
+      plan,
       pct,
     };
   });
@@ -77,6 +82,15 @@ export function GoalProgress({ goals, prMap, unit }) {
                   }}
                 />
               </div>
+              <p className="text-[11px] mt-1.5" style={{ color: "var(--text-2)" }}>
+                남은 중량 {ex.remaining} {unit}
+                {ex.targetDate ? ` · 목표일 ${ex.targetDate}` : ""}
+              </p>
+              {ex.plan?.weeklyGain != null && ex.plan.status === "active" && (
+                <p className="text-[11px] mt-0.5" style={{ color: "var(--accent)" }}>
+                  주당 필요 증가량 {ex.plan.weeklyGain} {unit}
+                </p>
+              )}
             </motion.div>
           );
         })}

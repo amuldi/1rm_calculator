@@ -1,14 +1,21 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sun, Moon, Trash2, Scale, Info,
-  Download, Upload, CheckCircle2, AlertCircle,
+  Download, Upload, CheckCircle2, AlertCircle, Cloud,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useUIStore } from "@/store/uiStore";
 import { useWorkoutStore } from "@/store/workoutStore";
 import { useGoalStore } from "@/store/goalStore";
+import { useAuthStore } from "@/store/authStore";
+import { useSyncStore } from "@/store/syncStore";
 import { useDarkMode } from "@/hooks/useDarkMode";
+import { createBackupPayload, parseBackupPayload } from "@/lib/backup";
+import { getSyncSummary, isValidSyncTime } from "@/lib/syncFeedback";
+import { getSyncStatus } from "@/lib/syncConfig";
+import { syncUserData } from "@/lib/syncService";
 
 function Row({ icon: Icon, label, children, border = true }) {
   return (
@@ -51,10 +58,32 @@ function Toast({ msg, type = "ok" }) {
 export default function ProfilePage() {
   const { unit, setUnit } = useUIStore();
   const { isDark, toggle } = useDarkMode();
-  const { history, clearHistory, importHistory } = useWorkoutStore();
-  const { goals, importGoals } = useGoalStore();
+  const { history, deletedRecords, clearHistory, importHistory, importDeletedRecords } = useWorkoutStore();
+  const { goals, deletedGoals, importGoals, importDeletedGoals } = useGoalStore();
+  const {
+    status: authStatus,
+    user,
+    error: authError,
+    initializeAuth,
+    signInWithGoogle,
+    signOutUser,
+  } = useAuthStore();
+  const {
+    lastSyncedAt,
+    lastSyncStats,
+    lastSyncError,
+    markSyncSuccess,
+    markSyncError,
+  } = useSyncStore();
   const fileRef = useRef(null);
   const [toast, setToast] = useState(null);
+  const [syncing, setSyncing] = useState(false);
+  const syncStatus = getSyncStatus();
+  const hasLastSync = isValidSyncTime(lastSyncedAt);
+
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
 
   const showToast = (msg, type = "ok") => {
     setToast({ msg, type });
@@ -62,7 +91,7 @@ export default function ProfilePage() {
   };
 
   const handleExport = () => {
-    const data = { version: "2.0", exportedAt: new Date().toISOString(), history, goals };
+    const data = createBackupPayload({ history, goals, deletedRecords, deletedGoals });
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -80,12 +109,15 @@ export default function ProfilePage() {
     reader.onload = (ev) => {
       try {
         const data = JSON.parse(ev.target.result);
-        if (!data.history && !data.goals) throw new Error("invalid");
-        if (data.history) importHistory(data.history);
-        if (data.goals) importGoals(data.goals);
-        showToast(`${data.history?.length ?? 0}개 기록을 불러왔습니다.`);
-      } catch {
-        showToast("파일 형식이 올바르지 않습니다.", "error");
+        const parsed = parseBackupPayload(data);
+        importHistory(parsed.history);
+        importGoals(parsed.goals);
+        importDeletedRecords(parsed.deletedRecords);
+        importDeletedGoals(parsed.deletedGoals);
+        const skipped = parsed.stats.droppedRecords ? ` · ${parsed.stats.droppedRecords}개 제외` : "";
+        showToast(`${parsed.stats.recordCount}개 기록, 목표 ${parsed.stats.goalCount}개를 불러왔습니다${skipped}.`);
+      } catch (error) {
+        showToast(error?.message || "파일 형식이 올바르지 않습니다.", "error");
       }
     };
     reader.readAsText(file);
@@ -96,6 +128,29 @@ export default function ProfilePage() {
     if (!window.confirm("모든 운동 기록을 삭제하시겠습니까? 되돌릴 수 없습니다.")) return;
     clearHistory();
     showToast("기록이 삭제되었습니다.");
+  };
+
+  const handleSync = async () => {
+    if (!user?.uid) {
+      showToast("로그인 후 동기화할 수 있습니다.", "error");
+      return;
+    }
+    setSyncing(true);
+    try {
+      const result = await syncUserData({ uid: user.uid, history, goals, deletedRecords, deletedGoals });
+      importHistory(result.history);
+      importGoals(result.goals);
+      importDeletedRecords(result.deletedRecords);
+      importDeletedGoals(result.deletedGoals);
+      markSyncSuccess(result.stats);
+      showToast(`${result.stats.recordCount}개 기록, 목표 ${result.stats.goalCount}개를 동기화했습니다.`);
+    } catch (error) {
+      const message = error?.message || "동기화에 실패했습니다.";
+      markSyncError(message);
+      showToast(message, "error");
+    } finally {
+      setSyncing(false);
+    }
   };
 
   return (
@@ -131,6 +186,75 @@ export default function ProfilePage() {
             </p>
           </div>
         </motion.div>
+
+        {/* Service readiness */}
+        <div className="card px-5 py-1">
+          <p className="section-label pt-4 pb-2">서비스 상태</p>
+          <Row icon={Cloud} label="계정 동기화" border={false}>
+            <div className="text-right max-w-[220px]">
+              <span
+                className="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-bold"
+                style={{
+                  background: syncStatus.configured ? "var(--accent-faint)" : "var(--control-bg)",
+                  color: syncStatus.configured ? "var(--accent)" : "var(--text-2)",
+                  border: `1px solid ${syncStatus.configured ? "var(--accent-border)" : "var(--border-subtle)"}`,
+                }}
+              >
+                {syncStatus.configured ? "준비됨" : "로컬 모드"}
+              </span>
+              <p className="text-xs leading-relaxed mt-1.5" style={{ color: "var(--text-2)" }}>
+                {syncStatus.message}
+              </p>
+              {user && (
+                <p className="text-xs mt-1" style={{ color: "var(--text-1)" }}>
+                  {user.email || user.displayName || "로그인됨"}
+                </p>
+              )}
+              {authError && (
+                <p className="text-xs mt-1" style={{ color: "var(--red)" }}>
+                  {authError}
+                </p>
+              )}
+              {hasLastSync && (
+                <p className="text-xs mt-2 leading-relaxed" style={{ color: "var(--text-2)" }}>
+                  마지막 동기화 {format(new Date(lastSyncedAt), "yyyy. M. d. HH:mm")}
+                  {lastSyncStats ? ` · ${getSyncSummary(lastSyncStats)}` : ""}
+                </p>
+              )}
+              {lastSyncError && (
+                <p className="text-xs mt-2 leading-relaxed" style={{ color: "var(--red)" }}>
+                  최근 오류: {lastSyncError}
+                </p>
+              )}
+              <div className="flex justify-end gap-2 mt-3 flex-wrap">
+                {!syncStatus.configured ? null : user ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleSync}
+                      disabled={syncing}
+                      className="btn-accent text-xs px-3 py-2"
+                    >
+                      {syncing ? "동기화 중" : "동기화"}
+                    </button>
+                    <button type="button" onClick={signOutUser} className="btn-ghost text-xs px-3 py-2">
+                      로그아웃
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={signInWithGoogle}
+                    disabled={authStatus === "loading"}
+                    className="btn-accent text-xs px-3 py-2"
+                  >
+                    {authStatus === "loading" ? "로그인 중" : "Google 로그인"}
+                  </button>
+                )}
+              </div>
+            </div>
+          </Row>
+        </div>
 
         {/* Preferences */}
         <div className="card px-5 py-1">
@@ -197,6 +321,21 @@ export default function ProfilePage() {
               <span className="text-sm" style={{ color: "var(--text-2)" }}>{v}</span>
             </Row>
           ))}
+          <Row icon={Info} label="데이터 처리 안내">
+            <Link to="/privacy" className="btn-ghost text-xs px-3 py-2">
+              보기
+            </Link>
+          </Row>
+          <Row icon={Info} label="출시 준비도">
+            <Link to="/readiness" className="btn-ghost text-xs px-3 py-2">
+              확인
+            </Link>
+          </Row>
+          <Row icon={Info} label="진단 정보" border={false}>
+            <Link to="/diagnostics" className="btn-ghost text-xs px-3 py-2">
+              보기
+            </Link>
+          </Row>
         </div>
       </div>
 

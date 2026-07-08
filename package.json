@@ -2,14 +2,23 @@
   "name": "1rm-calculator",
   "version": "2.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "npm run build"
+    "test": "node --test tests/*.test.mjs",
+    "verify:env": "node scripts/verify-env.mjs",
+    "verify:release": "node scripts/verify-release.mjs",
+    "verify:performance": "node scripts/verify-performance.mjs",
+    "qa:browser": "node --experimental-websocket scripts/verify-browser.mjs",
+    "qa:browser:server": "QA_START_SERVER=1 node --experimental-websocket scripts/verify-browser.mjs",
+    "check": "npm run test && npm run verify:env && npm run verify:release && npm run build && npm run verify:performance",
+    "check:full": "npm run check && npm run qa:browser"
   },
   "dependencies": {
     "date-fns": "^4.1.0",
+    "firebase": "^12.15.0",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.507.0",
     "react": "^18.2.0",
@@ -19,12 +28,12 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.1",
     "vite": "^6.3.3",
-    "vite-plugin-pwa": "^1.0.0",
-    "@vitejs/plugin-react": "^4.7.0"
+    "vite-plugin-pwa": "^1.0.0"
   },
   "engines": {
     "node": ">=20 <25"
@@ -33,7 +42,7 @@
     "type": "git",
     "url": "https://github.com/amuldi/1rm_calculator"
   },
-  "homepage": "https://1rm-calculator.vercel.app",
+  "homepage": "https://rm-calculator-3cf1d.web.app",
   "license": "MIT",
   "description": "단순하고 직관적인 1RM 계산 및 운동 기록 분석 앱",
   "keywords": [

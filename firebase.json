@@ -1,4 +1,7 @@
 {
+  "firestore": {
+    "rules": "firestore.rules"
+  },
   "hosting": {
     "public": "dist",
     "ignore": [
@@ -13,6 +16,12 @@
       }
     ],
     "headers": [
+      {
+        "source": "/health.json",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-store" }
+        ]
+      },
       {
         "source": "**/*.@(js|css)",
         "headers": [

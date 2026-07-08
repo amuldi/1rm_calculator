@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import { Dumbbell, ChevronRight, Flame, Activity, BarChart2 } from "lucide-react";
+import { Dumbbell, ChevronRight, Flame, Activity, BarChart2, TrendingDown, TrendingUp, Minus } from "lucide-react";
 import { StatsCard } from "./components/StatsCard";
 import { PRBoard } from "./components/PRBoard";
 import { GoalProgress } from "./components/GoalProgress";
@@ -10,6 +10,7 @@ import { useWorkoutStore } from "@/store/workoutStore";
 import { useGoalStore } from "@/store/goalStore";
 import { useUIStore } from "@/store/uiStore";
 import { EXERCISE_MAP } from "@/constants/exercises";
+import { getEmptyDashboardCopy } from "@/lib/onboarding";
 import { getRecordDisplay, getRecordRMKg, getRecordVolume, getTrend } from "@/lib/utils";
 
 const GREETING = () => {
@@ -18,6 +19,62 @@ const GREETING = () => {
   if (h < 18) return "좋은 오후예요";
   return "좋은 저녁이에요";
 };
+
+function getWindowVolume(history, unit, start, end) {
+  return history
+    .filter((record) => {
+      const time = new Date(record.date).getTime();
+      return Number.isFinite(time) && time >= start && time < end;
+    })
+    .reduce((sum, record) => sum + getRecordVolume(record, unit), 0);
+}
+
+function buildFourWeekSummary(history, unit) {
+  const now = Date.now();
+  const windowMs = 28 * 86400000;
+  const current = getWindowVolume(history, unit, now - windowMs, now + 1);
+  const previous = getWindowVolume(history, unit, now - windowMs * 2, now - windowMs);
+  const currentSessions = new Set(
+    history
+      .filter((record) => {
+        const time = new Date(record.date).getTime();
+        return Number.isFinite(time) && time >= now - windowMs && time <= now;
+      })
+      .map((record) => record.date?.split("T")[0])
+      .filter(Boolean)
+  ).size;
+
+  if (!current && !previous) {
+    return {
+      icon: Minus,
+      tone: "var(--text-2)",
+      title: "4주 변화",
+      body: "기록이 쌓이면 최근 4주 훈련량 변화를 비교합니다.",
+    };
+  }
+
+  if (!previous) {
+    return {
+      icon: TrendingUp,
+      tone: "var(--accent)",
+      title: "최근 4주 기준 생성",
+      body: `최근 4주 볼륨은 ${Math.round(current).toLocaleString()} ${unit}, 운동일은 ${currentSessions}일입니다.`,
+    };
+  }
+
+  const delta = current - previous;
+  const pct = Math.round((delta / previous) * 100);
+  const icon = pct > 3 ? TrendingUp : pct < -3 ? TrendingDown : Minus;
+  const tone = pct > 3 ? "var(--accent)" : pct < -3 ? "var(--red)" : "var(--text-2)";
+  const direction = pct > 3 ? "증가" : pct < -3 ? "감소" : "유지";
+
+  return {
+    icon,
+    tone,
+    title: "최근 4주 변화",
+    body: `직전 4주 대비 볼륨이 ${Math.abs(pct)}% ${direction}했습니다. 최근 4주 운동일은 ${currentSessions}일입니다.`,
+  };
+}
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -39,6 +96,9 @@ export default function DashboardPage() {
     const totalVol = Math.round(history.reduce((sum, record) => sum + getRecordVolume(record, unit), 0));
     return { last, trend, totalVol };
   }, [history, unit]);
+  const fourWeekSummary = useMemo(() => buildFourWeekSummary(history, unit), [history, unit]);
+  const FourWeekIcon = fourWeekSummary.icon;
+  const emptyCopy = useMemo(() => getEmptyDashboardCopy(), []);
 
   return (
     <div className="min-h-screen px-4 py-8" style={{ background: "var(--bg)" }}>
@@ -74,17 +134,33 @@ export default function DashboardPage() {
               <Dumbbell size={28} style={{ color: "var(--accent)" }} />
             </div>
             <div className="space-y-1.5">
-              <h2 className="text-lg font-bold" style={{ color: "var(--text-1)" }}>첫 기록을 시작하세요</h2>
+              <h2 className="text-lg font-bold" style={{ color: "var(--text-1)" }}>{emptyCopy.title}</h2>
               <p className="text-sm" style={{ color: "var(--text-2)" }}>
-                1RM을 계산하면 대시보드에 운동 기록과 통계가 표시됩니다.
+                {emptyCopy.body}
               </p>
+            </div>
+            <div className="grid gap-2 text-left">
+              {emptyCopy.steps.map((step, index) => (
+                <div key={step.title} className="flex gap-3 p-3 rounded-lg" style={{ background: "var(--row-bg)" }}>
+                  <span
+                    className="w-6 h-6 rounded-md flex items-center justify-center text-xs font-black shrink-0"
+                    style={{ background: "var(--accent-faint)", color: "var(--accent)" }}
+                  >
+                    {index + 1}
+                  </span>
+                  <div>
+                    <p className="text-sm font-bold" style={{ color: "var(--text-1)" }}>{step.title}</p>
+                    <p className="text-xs leading-relaxed" style={{ color: "var(--text-2)" }}>{step.body}</p>
+                  </div>
+                </div>
+              ))}
             </div>
             <button
               onClick={() => navigate("/calculator")}
               className="btn-accent px-6 py-2.5 text-sm mx-auto flex items-center gap-2"
             >
               <Dumbbell size={16} />
-              1RM 계산하기
+              {emptyCopy.action}
               <ChevronRight size={14} />
             </button>
           </motion.div>
@@ -95,6 +171,21 @@ export default function DashboardPage() {
               <StatsCard label="이번 주 볼륨" value={weeklyVol > 0 ? weeklyVol.toLocaleString() : "—"} unit={weeklyVol > 0 ? unit : undefined} sub="7일 합산" icon={Activity} delay={0.05} />
               <StatsCard label="연속 운동" value={streak || "—"} unit={streak ? "일" : undefined} sub={streak ? "현재 스트릭" : "기록 없음"} icon={Flame} delay={0.1} />
               <StatsCard label="총 볼륨" value={stats?.totalVol?.toLocaleString()} unit={unit} sub="전체 기간" icon={BarChart2} delay={0.15} />
+            </div>
+
+            <div className="card p-5 flex items-start gap-3">
+              <div
+                className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                style={{ background: "var(--accent-faint)", color: fourWeekSummary.tone }}
+              >
+                <FourWeekIcon size={18} />
+              </div>
+              <div>
+                <p className="section-label mb-1">{fourWeekSummary.title}</p>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--text-1)" }}>
+                  {fourWeekSummary.body}
+                </p>
+              </div>
             </div>
 
             <PRBoard prMap={prMap} unit={unit} />
@@ -128,7 +219,7 @@ export default function DashboardPage() {
                           {exercise?.labelKo || r.exerciseId?.replace(/-/g, " ")}
                         </p>
                         <p className="text-xs mt-0.5" style={{ color: "var(--text-2)" }}>
-                          {r.weight}{unit} × {r.reps}회 · {format(new Date(r.date), "M/d")}
+                          {r.weight}{unit} × {r.reps}회 × {r.sets || 1}세트 · {format(new Date(r.date), "M/d")}
                         </p>
                       </div>
                       <div className="text-right shrink-0">

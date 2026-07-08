@@ -1,0 +1,156 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isNonEmptyString(value) {
+      return value is string && value.size() > 0;
+    }
+
+    function isOptionalString(value) {
+      return value == null || value is string;
+    }
+
+    function isPositiveNumber(value) {
+      return value is number && value > 0;
+    }
+
+    function isPositiveInt(value) {
+      return value is int && value > 0;
+    }
+
+    function isSyncVersion(value) {
+      return value is int && value >= 1;
+    }
+
+    function hasWorkoutRecordShape(recordId) {
+      return request.resource.data.keys().hasOnly([
+          "id",
+          "exerciseId",
+          "weight",
+          "weightKg",
+          "reps",
+          "sets",
+          "rm",
+          "rmKg",
+          "unit",
+          "formula",
+          "rpe",
+          "notes",
+          "date",
+          "createdAt",
+          "updatedAt",
+          "syncVersion",
+        ])
+        && request.resource.data.keys().hasAll([
+          "id",
+          "exerciseId",
+          "weight",
+          "weightKg",
+          "reps",
+          "sets",
+          "rm",
+          "rmKg",
+          "unit",
+          "date",
+          "createdAt",
+          "updatedAt",
+          "syncVersion",
+        ])
+        && request.resource.data.id == recordId
+        && isNonEmptyString(request.resource.data.exerciseId)
+        && isPositiveNumber(request.resource.data.weight)
+        && isPositiveNumber(request.resource.data.weightKg)
+        && isPositiveInt(request.resource.data.reps)
+        && request.resource.data.reps <= 30
+        && isPositiveInt(request.resource.data.sets)
+        && request.resource.data.sets <= 20
+        && isPositiveNumber(request.resource.data.rm)
+        && isPositiveNumber(request.resource.data.rmKg)
+        && request.resource.data.unit in ["kg", "lb"]
+        && isOptionalString(request.resource.data.get("formula", null))
+        && (request.resource.data.get("rpe", null) == null || (
+          request.resource.data.get("rpe", null) is number
+          && request.resource.data.get("rpe", null) >= 1
+          && request.resource.data.get("rpe", null) <= 10
+        ))
+        && isOptionalString(request.resource.data.get("notes", null))
+        && isNonEmptyString(request.resource.data.date)
+        && isNonEmptyString(request.resource.data.createdAt)
+        && isNonEmptyString(request.resource.data.updatedAt)
+        && isSyncVersion(request.resource.data.syncVersion);
+    }
+
+    function hasDeletedRecordShape(recordId) {
+      return request.resource.data.keys().hasOnly([
+          "id",
+          "deletedAt",
+          "updatedAt",
+          "syncVersion",
+        ])
+        && request.resource.data.keys().hasAll([
+          "id",
+          "deletedAt",
+          "updatedAt",
+          "syncVersion",
+        ])
+        && request.resource.data.id == recordId
+        && isNonEmptyString(request.resource.data.deletedAt)
+        && isNonEmptyString(request.resource.data.updatedAt)
+        && isSyncVersion(request.resource.data.syncVersion);
+    }
+
+    function hasGoalShape() {
+      return request.resource.data.keys().hasOnly([
+          "targetKg",
+          "targetDate",
+          "createdAt",
+          "updatedAt",
+          "syncVersion",
+        ])
+        && request.resource.data.keys().hasAll([
+          "targetKg",
+          "createdAt",
+          "updatedAt",
+          "syncVersion",
+        ])
+        && isPositiveNumber(request.resource.data.targetKg)
+        && isOptionalString(request.resource.data.get("targetDate", null))
+        && isNonEmptyString(request.resource.data.createdAt)
+        && isNonEmptyString(request.resource.data.updatedAt)
+        && isSyncVersion(request.resource.data.syncVersion);
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow write: if false;
+
+      match /workoutRecords/{recordId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && hasWorkoutRecordShape(recordId);
+      }
+
+      match /deletedWorkoutRecords/{recordId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && hasDeletedRecordShape(recordId);
+      }
+
+      match /goals/{exerciseId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && hasGoalShape();
+      }
+
+      match /deletedGoals/{exerciseId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && hasDeletedRecordShape(exerciseId);
+      }
+    }
+  }
+}

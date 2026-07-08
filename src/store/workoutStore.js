@@ -6,6 +6,7 @@ import {
   getRecordVolume,
   normalizeWorkoutRecord,
 } from "@/lib/utils";
+import { mergeDeletedEntities, normalizeDeletedEntity } from "@/lib/syncModel";
 
 function sortByNewest(records) {
   return [...records].sort((a, b) => {
@@ -28,10 +29,28 @@ function normalizeRecords(records) {
   );
 }
 
+function normalizeDeletedRecords(records) {
+  if (!Array.isArray(records)) return [];
+  return mergeDeletedEntities(records, []);
+}
+
+function createDeletedRecord(recordOrId) {
+  const now = new Date().toISOString();
+  const id = typeof recordOrId === "string" ? recordOrId : recordOrId?.id;
+  if (!id) return null;
+  return normalizeDeletedEntity({
+    id,
+    deletedAt: now,
+    updatedAt: now,
+    syncVersion: (Number(recordOrId?.syncVersion) || 1) + 1,
+  });
+}
+
 export const useWorkoutStore = create(
   persist(
     (set, get) => ({
       history: [],
+      deletedRecords: [],
 
       addRecord: (record) => {
         const now = new Date().toISOString();
@@ -39,6 +58,8 @@ export const useWorkoutStore = create(
           ...record,
           id: generateId(),
           createdAt: now,
+          updatedAt: now,
+          syncVersion: record.syncVersion || 1,
           date: record.date || now,
         });
         set((state) => ({ history: [newRecord, ...state.history] }));
@@ -46,12 +67,49 @@ export const useWorkoutStore = create(
       },
 
       deleteRecord: (id) =>
-        set((state) => ({ history: state.history.filter((r) => r.id !== id) })),
+        set((state) => {
+          const record = state.history.find((r) => r.id === id);
+          const tombstone = createDeletedRecord(record || id);
+          return {
+            history: state.history.filter((r) => r.id !== id),
+            deletedRecords: tombstone
+              ? mergeDeletedEntities(state.deletedRecords, [tombstone])
+              : state.deletedRecords,
+          };
+        }),
 
-      clearHistory: () => set({ history: [] }),
+      updateRecord: (id, changes) =>
+        set((state) => ({
+          history: normalizeRecords(
+            state.history.map((record) =>
+              record.id === id
+                ? normalizeWorkoutRecord({
+                    ...record,
+                    ...changes,
+                    id: record.id,
+                    updatedAt: new Date().toISOString(),
+                    syncVersion: (Number(record.syncVersion) || 1) + 1,
+                  })
+                : record
+            )
+          ),
+        })),
+
+      clearHistory: () =>
+        set((state) => ({
+          history: [],
+          deletedRecords: mergeDeletedEntities(
+            state.deletedRecords,
+            state.history.map(createDeletedRecord).filter(Boolean)
+          ),
+        })),
 
       importHistory: (records) => {
         set({ history: normalizeRecords(records) });
+      },
+
+      importDeletedRecords: (records) => {
+        set({ deletedRecords: normalizeDeletedRecords(records) });
       },
 
       getPRByExercise: () => {
@@ -110,6 +168,7 @@ export const useWorkoutStore = create(
       migrate: (state) => ({
         ...state,
         history: normalizeRecords(state?.history),
+        deletedRecords: normalizeDeletedRecords(state?.deletedRecords),
       }),
     }
   )

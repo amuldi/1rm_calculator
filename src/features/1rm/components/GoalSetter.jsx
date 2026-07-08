@@ -4,16 +4,19 @@ import { Target, Trash2, CheckCircle2 } from "lucide-react";
 import { useGoalStore } from "@/store/goalStore";
 import { useWorkoutStore } from "@/store/workoutStore";
 import { useUIStore } from "@/store/uiStore";
-import { clamp, getDisplayWeightFromKg, getRecordRMKg } from "@/lib/utils";
+import { clamp, getRecordRMKg } from "@/lib/utils";
+import { getGoalPlan } from "@/lib/goalPlanning";
 
 export function GoalSetter({ exerciseId }) {
   const { unit } = useUIStore();
   const { setGoal, deleteGoal, getGoal, getGoalKg } = useGoalStore();
   const { history } = useWorkoutStore();
+  const goalMeta = useGoalStore((state) => exerciseId ? state.goals[exerciseId] : null);
 
   const currentGoal = exerciseId ? getGoal(exerciseId, unit) : null;
   const currentGoalKg = exerciseId ? getGoalKg(exerciseId) : null;
   const [input, setInput] = useState(currentGoal?.toString() || "");
+  const [targetDate, setTargetDate] = useState(goalMeta?.targetDate || "");
   const [saved, setSaved] = useState(false);
 
   const currentBestKg = useMemo(() => {
@@ -23,21 +26,22 @@ export function GoalSetter({ exerciseId }) {
     return Math.max(...recs.map((r) => getRecordRMKg(r)));
   }, [exerciseId, history]);
 
-  const currentBest = currentBestKg == null ? null : getDisplayWeightFromKg(currentBestKg, unit);
-
   const progress = currentGoalKg && currentBestKg
     ? clamp(Math.round((currentBestKg / currentGoalKg) * 100), 0, 100)
     : 0;
+  const plan = currentGoalKg ? getGoalPlan({ targetKg: currentGoalKg, targetDate }, currentBestKg, unit) : null;
+  const currentBest = currentBestKg == null ? null : plan?.current ?? null;
 
   useEffect(() => {
     setInput(currentGoal?.toString() || "");
+    setTargetDate(goalMeta?.targetDate || "");
     setSaved(false);
-  }, [exerciseId, currentGoal]);
+  }, [exerciseId, currentGoal, goalMeta?.targetDate]);
 
   const save = () => {
     const v = parseFloat(input);
     if (!exerciseId || isNaN(v) || v <= 0) return;
-    setGoal(exerciseId, v, unit);
+    setGoal(exerciseId, v, unit, targetDate);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -70,10 +74,14 @@ export function GoalSetter({ exerciseId }) {
                   }}
                 />
               </div>
+              <p className="text-xs leading-relaxed" style={{ color: "var(--text-2)" }}>
+                {plan?.message}
+                {plan?.daysLeft != null && plan.status === "active" ? ` · ${plan.daysLeft}일 남음` : ""}
+              </p>
             </div>
           )}
 
-          <div className="flex gap-2">
+          <div className="grid sm:grid-cols-[1fr_170px_auto_auto] gap-2">
             <div className="relative flex-1">
               <input
                 type="number"
@@ -91,6 +99,14 @@ export function GoalSetter({ exerciseId }) {
                 {unit}
               </span>
             </div>
+
+            <input
+              type="date"
+              value={targetDate}
+              onChange={(e) => setTargetDate(e.target.value)}
+              className="field"
+              aria-label="목표 날짜"
+            />
 
             <button
               onClick={save}

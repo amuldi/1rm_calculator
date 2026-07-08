@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trophy, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { Trophy, ChevronDown, ChevronUp, Sparkles, ShieldCheck } from "lucide-react";
 import { getPercentages } from "../utils/formulas";
 import { useUIStore } from "@/store/uiStore";
 
-export function ResultCard({ result, allResults, isPR, goalProgress, currentGoal }) {
+export function ResultCard({ result, allResults, isPR, goalProgress, currentGoal, confidence, estimateRange }) {
   const [showTable, setShowTable] = useState(false);
   const { unit } = useUIStore();
 
@@ -46,6 +46,28 @@ export function ResultCard({ result, allResults, isPR, goalProgress, currentGoal
           </motion.div>
           <p className="text-xl font-semibold mt-1" style={{ color: "var(--text-2)" }}>{unit}</p>
         </div>
+
+        {confidence && estimateRange && (
+          <div
+            className="rounded-lg px-4 py-3 text-left"
+            style={{ background: "var(--row-bg)", border: "1px solid var(--border-subtle)" }}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2 min-w-0">
+                <ShieldCheck size={15} style={{ color: "var(--accent)" }} />
+                <p className="text-sm font-bold" style={{ color: "var(--text-1)" }}>
+                  추정 신뢰도 {confidence.level}
+                </p>
+              </div>
+              <p className="text-sm font-black tabular-nums shrink-0" style={{ color: "var(--text-1)" }}>
+                {estimateRange.low}~{estimateRange.high} {unit}
+              </p>
+            </div>
+            <p className="text-xs leading-relaxed mt-1.5" style={{ color: "var(--text-2)" }}>
+              {confidence.message}
+            </p>
+          </div>
+        )}
 
         {currentGoal && (
           <div className="space-y-2">

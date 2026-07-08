@@ -10,9 +10,14 @@ export default function OneRMPage() {
     exerciseId, setExerciseId,
     weight, setWeight,
     reps, setReps,
+    sets, setSets,
+    rpe, setRpe,
+    notes, setNotes,
+    workoutDate, setWorkoutDate,
     result, allResults,
     errors,
     currentGoal, goalProgress,
+    confidence, estimateRange,
     isPR,
     calculate,
   } = use1RM();
@@ -33,6 +38,14 @@ export default function OneRMPage() {
           setWeight={setWeight}
           reps={reps}
           setReps={setReps}
+          sets={sets}
+          setSets={setSets}
+          rpe={rpe}
+          setRpe={setRpe}
+          notes={notes}
+          setNotes={setNotes}
+          workoutDate={workoutDate}
+          setWorkoutDate={setWorkoutDate}
           errors={errors}
         />
 
@@ -43,6 +56,8 @@ export default function OneRMPage() {
             isPR={isPR}
             goalProgress={goalProgress}
             currentGoal={currentGoal}
+            confidence={confidence}
+            estimateRange={estimateRange}
           />
         )}
 

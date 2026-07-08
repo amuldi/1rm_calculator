@@ -146,7 +146,24 @@ function NumberField({ label, value, onChange, placeholder, hint, suffix, min, m
   );
 }
 
-export function Calculator({ onCalculate, exerciseId, setExerciseId, weight, setWeight, reps, setReps, errors = {} }) {
+export function Calculator({
+  onCalculate,
+  exerciseId,
+  setExerciseId,
+  weight,
+  setWeight,
+  reps,
+  setReps,
+  sets,
+  setSets,
+  rpe,
+  setRpe,
+  notes,
+  setNotes,
+  workoutDate,
+  setWorkoutDate,
+  errors = {},
+}) {
   const { unit, setUnit } = useUIStore();
   const selectedEx = EXERCISES.find((e) => e.id === exerciseId);
   const recommendedFormula = getRecommendedFormula(exerciseId);
@@ -209,6 +226,37 @@ export function Calculator({ onCalculate, exerciseId, setExerciseId, weight, set
       <div className="grid grid-cols-2 gap-3">
         <NumberField label="무게" value={weight} onChange={setWeight} placeholder="100" suffix={unit} min={1} max={500} hint={HINTS.weight} error={errors.weight} />
         <NumberField label="반복 횟수" value={reps} onChange={setReps} placeholder="5" suffix="회" min={1} max={MAX_REPS} hint={HINTS.reps} error={errors.reps} />
+      </div>
+
+      {/* Session detail */}
+      <div className="grid grid-cols-2 gap-3">
+        <NumberField label="세트 수" value={sets} onChange={setSets} placeholder="1" suffix="세트" min={1} max={20} error={errors.sets} />
+        <NumberField label="RPE" value={rpe} onChange={setRpe} placeholder="8" suffix="/10" min={1} max={10} error={errors.rpe} />
+      </div>
+
+      <div className="space-y-1.5">
+        <label className="label">운동 날짜</label>
+        <input
+          type="date"
+          value={workoutDate}
+          onChange={(e) => setWorkoutDate(e.target.value)}
+          className="field"
+          style={errors.workoutDate ? { borderColor: "var(--red-border)" } : {}}
+        />
+        {errors.workoutDate && (
+          <p className="text-xs" style={{ color: "var(--red)" }}>{errors.workoutDate}</p>
+        )}
+      </div>
+
+      <div className="space-y-1.5">
+        <label className="label">메모</label>
+        <textarea
+          value={notes}
+          onChange={(e) => setNotes(e.target.value.slice(0, 160))}
+          placeholder="컨디션, 그립, 보조 장비 등을 기록하세요"
+          rows={3}
+          className="field resize-none"
+        />
       </div>
 
       {/* Formula */}

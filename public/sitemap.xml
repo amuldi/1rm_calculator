@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://ondura.vercel.app/</loc>
+    <loc>https://rm-calculator-3cf1d.web.app/</loc>
     <priority>1.00</priority>
   </url>
   <url>
-    <loc>https://ondura.vercel.app/one-rm</loc>
+    <loc>https://rm-calculator-3cf1d.web.app/dashboard</loc>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://ondura.vercel.app/zone</loc>
-    <priority>0.80</priority>
+    <loc>https://rm-calculator-3cf1d.web.app/calculator</loc>
+    <priority>0.90</priority>
   </url>
   <url>
-    <loc>https://ondura.vercel.app/insight</loc>
+    <loc>https://rm-calculator-3cf1d.web.app/analytics</loc>
     <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://rm-calculator-3cf1d.web.app/privacy</loc>
+    <priority>0.40</priority>
+  </url>
+  <url>
+    <loc>https://rm-calculator-3cf1d.web.app/readiness</loc>
+    <priority>0.30</priority>
   </url>
 </urlset>

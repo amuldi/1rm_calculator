@@ -1,0 +1,14 @@
+{
+  "service": "1rm-calculator",
+  "status": "ok",
+  "version": "2.0.0",
+  "canonicalUrl": "https://rm-calculator-3cf1d.web.app",
+  "checks": [
+    "static-app",
+    "pwa-assets",
+    "firestore-rules",
+    "release-preflight",
+    "browser-qa",
+    "performance-budget"
+  ]
+}

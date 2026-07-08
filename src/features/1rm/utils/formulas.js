@@ -56,6 +56,36 @@ export function calculateAll1RM(weight, reps) {
   }));
 }
 
+export function getEstimateConfidence(reps) {
+  const r = parseInt(reps, 10);
+  if (!r || r < 1 || r > MAX_REPS) {
+    return {
+      level: "확인 필요",
+      rangePct: 0.08,
+      message: "입력값을 확인한 뒤 추정 신뢰도를 계산합니다.",
+    };
+  }
+  if (r <= 3) {
+    return {
+      level: "높음",
+      rangePct: 0.03,
+      message: "저반복 기록이라 1RM 추정 오차가 비교적 작습니다.",
+    };
+  }
+  if (r <= 8) {
+    return {
+      level: "보통",
+      rangePct: 0.05,
+      message: "훈련 기록 기반 추정으로 참고하기 좋은 범위입니다.",
+    };
+  }
+  return {
+    level: "낮음",
+    rangePct: 0.08,
+    message: "반복 수가 높아 실제 1RM과 차이가 커질 수 있습니다.",
+  };
+}
+
 export function getPercentages(rm1) {
   const pcts = [100, 95, 90, 85, 80, 75, 70, 65, 60];
   return pcts.map((pct) => ({

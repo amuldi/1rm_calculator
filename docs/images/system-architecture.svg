@@ -85,7 +85,7 @@
       <text x="652" y="631" class="label">DOMAIN LOGIC</text>
       <text x="652" y="669" class="boxTitle">계산 엔진과 유틸</text>
       <text x="652" y="710" class="item">종목별 1RM 공식 자동 선택</text>
-      <text x="652" y="742" class="item">반복 중량 %1RM 테이블</text>
+      <text x="652" y="742" class="item">목표 진행률과 PR 계산</text>
       <text x="652" y="774" class="item">kg/lb 변환과 기록 정규화</text>
     </g>
 

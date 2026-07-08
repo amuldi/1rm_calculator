@@ -27,6 +27,22 @@ export function formatDate(dateStr) {
   return format(d, "yyyy. M. d.");
 }
 
+export function toDateInputValue(dateStr = new Date()) {
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return "";
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function dateInputToISO(dateInput) {
+  if (!dateInput || typeof dateInput !== "string") return new Date().toISOString();
+  const [year, month, day] = dateInput.split("-").map(Number);
+  if (!year || !month || !day) return new Date().toISOString();
+  return new Date(year, month - 1, day, 12, 0, 0).toISOString();
+}
+
 export function formatRelative(dateStr) {
   return formatDistanceToNow(new Date(dateStr), { addSuffix: true });
 }
@@ -90,17 +106,30 @@ export function getRecordRMKg(record) {
 }
 
 export function normalizeWorkoutRecord(record = {}) {
+  const now = new Date().toISOString();
   const unit = record.unit === "lb" ? "lb" : DEFAULT_UNIT;
   const weightKg = getRecordWeightKg({ ...record, unit });
   const rmKg = getRecordRMKg({ ...record, unit });
-  const date = record.date || record.createdAt || new Date().toISOString();
+  const date = record.date || record.createdAt || now;
+  const createdAt = record.createdAt || date || now;
+  const updatedAt = record.updatedAt || record.modifiedAt || createdAt;
+  const sets = clamp(Math.round(toFiniteNumber(record.sets) ?? 1), 1, 20);
+  const rpe = toFiniteNumber(record.rpe);
+  const syncVersion = Math.max(1, Math.round(toFiniteNumber(record.syncVersion) ?? 1));
 
   return {
     ...record,
     unit,
     date,
+    createdAt,
+    updatedAt,
+    syncVersion,
     weight: roundWeight(record.weight ?? getDisplayWeightFromKg(weightKg, unit)),
     rm: roundWeight(record.rm ?? getDisplayWeightFromKg(rmKg, unit)),
+    reps: clamp(Math.round(toFiniteNumber(record.reps) ?? 1), 1, 30),
+    sets,
+    rpe: rpe == null ? null : clamp(roundWeight(rpe), 1, 10),
+    notes: typeof record.notes === "string" ? record.notes.trim().slice(0, 160) : "",
     weightKg,
     rmKg,
   };
@@ -116,12 +145,14 @@ export function getRecordDisplay(record, unit = DEFAULT_UNIT) {
 }
 
 export function getRecordVolume(record, unit = DEFAULT_UNIT) {
-  return getDisplayWeightFromKg(getRecordWeightKg(record), unit) * (Number(record?.reps) || 0);
+  const reps = Number(record?.reps) || 0;
+  const sets = Number(record?.sets) || 1;
+  return getDisplayWeightFromKg(getRecordWeightKg(record), unit) * reps * sets;
 }
 
 export function getGoalKg(goal, fallbackUnit = DEFAULT_UNIT) {
   if (goal && typeof goal === "object") {
-    const explicit = toFiniteNumber(goal.goalKg ?? goal.valueKg);
+    const explicit = toFiniteNumber(goal.targetKg ?? goal.goalKg ?? goal.valueKg);
     if (explicit != null) return explicit;
 
     const value = toFiniteNumber(goal.value ?? goal.goal);
