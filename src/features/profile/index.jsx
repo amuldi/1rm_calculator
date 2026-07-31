@@ -17,6 +17,7 @@ import { createBackupPayload, parseBackupPayload } from "@/lib/backup";
 import { getSyncSummary, isValidSyncTime } from "@/lib/syncFeedback";
 import { getSyncStatus } from "@/lib/syncConfig";
 import { syncUserData } from "@/lib/syncService";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 function Row({ icon: Icon, label, children, border = true }) {
   return (
@@ -57,6 +58,10 @@ function Toast({ msg, type = "ok" }) {
 }
 
 export default function ProfilePage() {
+  useDocumentMeta({
+    title: "프로필 | 설정 및 데이터 관리",
+    description: "단위, 테마, 백업/복원, 계정 동기화 상태를 관리합니다.",
+  });
   const { unit, setUnit } = useUIStore();
   const { isDark, toggle } = useDarkMode();
   const { history, deletedRecords, clearHistory, importHistory, importDeletedRecords } = useWorkoutStore();

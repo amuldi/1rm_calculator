@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Moon, Menu, X, Dumbbell } from "lucide-react";
 import { useUIStore } from "@/store/uiStore";
@@ -14,13 +14,10 @@ const NAV_ITEMS = [
 ];
 
 export default function TopNav() {
-  const navigate = useNavigate();
   const { pathname } = useLocation();
   const { unit, setUnit } = useUIStore();
   const { isDark, toggle } = useDarkMode();
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  const go = (path) => { navigate(path); setDrawerOpen(false); };
 
   return (
     <>
@@ -36,8 +33,9 @@ export default function TopNav() {
         <div className="max-w-4xl mx-auto h-14 px-5 flex items-center gap-6">
 
           {/* Logo */}
-          <button
-            onClick={() => go("/dashboard")}
+          <Link
+            to="/dashboard"
+            onClick={() => setDrawerOpen(false)}
             className="shrink-0 flex items-center gap-2"
           >
             <div
@@ -49,16 +47,16 @@ export default function TopNav() {
             <span className="font-black text-sm tracking-tight" style={{ color: "var(--text-1)" }}>
               1RM
             </span>
-          </button>
+          </Link>
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1 flex-1">
             {NAV_ITEMS.map(({ path, label }) => {
               const active = pathname === path;
               return (
-                <button
+                <Link
                   key={path}
-                  onClick={() => go(path)}
+                  to={path}
                   className="relative px-4 py-1.5 text-xs font-semibold tracking-wide rounded-lg transition-colors duration-150"
                   style={{ color: active ? "var(--accent)" : "var(--text-2)" }}
                 >
@@ -71,7 +69,7 @@ export default function TopNav() {
                     />
                   )}
                   <span className="relative">{label}</span>
-                </button>
+                </Link>
               );
             })}
           </nav>
@@ -161,9 +159,10 @@ export default function TopNav() {
                 {NAV_ITEMS.map(({ path, label }) => {
                   const active = pathname === path;
                   return (
-                    <button
+                    <Link
                       key={path}
-                      onClick={() => go(path)}
+                      to={path}
+                      onClick={() => setDrawerOpen(false)}
                       className="w-full flex items-center px-4 py-3 rounded-xl text-sm font-semibold text-left transition-all"
                       style={{
                         background: active ? "var(--accent-faint)" : "transparent",
@@ -172,7 +171,7 @@ export default function TopNav() {
                       }}
                     >
                       {label}
-                    </button>
+                    </Link>
                   );
                 })}
               </nav>

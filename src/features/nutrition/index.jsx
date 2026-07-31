@@ -7,8 +7,13 @@ import { NutritionSummary } from "./components/NutritionSummary";
 import { GoalSetter } from "./components/GoalSetter";
 import { useNutrition } from "./hooks/useNutrition";
 import { toDateInputValue } from "@/lib/utils";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 export default function NutritionPage() {
+  useDocumentMeta({
+    title: "영양 기록 · 칼로리/단백질 계산기 | 식단 목표 관리",
+    description: "체중과 활동 수준으로 칼로리·단백질 목표를 자동 계산하고 끼니별 식사를 기록하세요.",
+  });
   const {
     selectedDate, setSelectedDate,
     mealType, setMealType,

@@ -5,8 +5,13 @@ import { GoalSetter } from "./components/GoalSetter";
 import { RecordList } from "./components/RecordList";
 import { FormulaGuide } from "./components/FormulaGuide";
 import { use1RM } from "./hooks/use1RM";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 export default function OneRMPage() {
+  useDocumentMeta({
+    title: "1RM 계산기 | 벤치프레스·스쿼트 종목별 공식 자동 적용",
+    description: "무게와 반복 횟수만 입력하면 종목별 추천 공식으로 예상 1RM과 추정 신뢰도를 계산합니다.",
+  });
   const {
     exerciseId, setExerciseId,
     weight, setWeight,

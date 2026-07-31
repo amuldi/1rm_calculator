@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { LayoutDashboard, Dumbbell, Utensils, BarChart3, User } from "lucide-react";
 
@@ -12,7 +12,6 @@ const TABS = [
 ];
 
 export default function BottomNav() {
-  const navigate = useNavigate();
   const { pathname } = useLocation();
 
   return (
@@ -28,9 +27,9 @@ export default function BottomNav() {
         {TABS.map(({ path, icon: Icon, label }) => {
           const active = pathname === path;
           return (
-            <button
+            <Link
               key={path}
-              onClick={() => navigate(path)}
+              to={path}
               className="relative flex-1 flex flex-col items-center justify-center gap-1 py-1.5 min-w-[44px]"
             >
               {active && (
@@ -56,7 +55,7 @@ export default function BottomNav() {
               >
                 {label}
               </span>
-            </button>
+            </Link>
           );
         })}
       </div>

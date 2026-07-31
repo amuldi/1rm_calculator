@@ -11,10 +11,16 @@ import {
 import { getSyncStatus } from "@/lib/syncConfig";
 import { getSupportConfig } from "@/lib/supportConfig";
 import { useDiagnosticStore } from "@/store/diagnosticStore";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 const APP_VERSION = "2.0.0";
 
 export default function DiagnosticsPage() {
+  useDocumentMeta({
+    title: "진단 정보 | 1RM 계산기",
+    description: "최근 런타임 오류와 동기화 상태를 확인하고 지원 패키지를 내려받습니다.",
+    noindex: true,
+  });
   const { events, clearEvents } = useDiagnosticStore();
   const syncStatus = getSyncStatus();
   const support = getSupportConfig(import.meta.env);

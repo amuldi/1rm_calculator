@@ -7,6 +7,7 @@ import {
   getReleaseReadiness,
   RELEASE_SETUP_STEPS,
 } from "@/lib/releaseReadiness";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 const KNOWN_LOCAL_CHECKS = {
   ci: true,
@@ -17,6 +18,11 @@ const KNOWN_LOCAL_CHECKS = {
 };
 
 export default function ReadinessPage() {
+  useDocumentMeta({
+    title: "출시 준비도 | 1RM 계산기",
+    description: "배포 전 확인이 필요한 환경 변수, 보안 규칙, CI, QA 항목을 점검합니다.",
+    noindex: true,
+  });
   const readiness = getReleaseReadiness({
     env: import.meta.env,
     checks: KNOWN_LOCAL_CHECKS,

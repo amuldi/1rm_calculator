@@ -15,6 +15,7 @@ import { EXERCISE_MAP } from "@/constants/exercises";
 import { getEmptyDashboardCopy } from "@/lib/onboarding";
 import { getRecordDisplay, getRecordRMKg, getRecordVolume, getTrend, toDateInputValue } from "@/lib/utils";
 import { getMacroProgress } from "@/features/nutrition/utils/nutritionMath";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 const GREETING = () => {
   const h = new Date().getHours();
@@ -80,6 +81,10 @@ function buildFourWeekSummary(history, unit) {
 }
 
 export default function DashboardPage() {
+  useDocumentMeta({
+    title: "대시보드 | 1RM 계산기 · 칼로리/단백질 계산기",
+    description: "최근 1RM, 훈련 볼륨, 오늘의 칼로리·단백질 목표 진행률을 한 화면에서 확인하세요.",
+  });
   const navigate = useNavigate();
   const { history, getPRByExercise, getWeeklyVolume, getStreakDays } = useWorkoutStore();
   const { goals } = useGoalStore();

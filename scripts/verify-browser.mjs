@@ -169,9 +169,10 @@ function assertCheck(checks, name, value) {
 }
 
 async function clickButton(client, text) {
+  // Matches both <button> and <a> (react-router's Link renders a real anchor for crawlable nav).
   return evalJs(client, `
     (() => {
-      const button = [...document.querySelectorAll("button")].find((item) => item.innerText.includes(${JSON.stringify(text)}));
+      const button = [...document.querySelectorAll("button, a")].find((item) => item.innerText.includes(${JSON.stringify(text)}));
       button?.click();
       return Boolean(button);
     })()

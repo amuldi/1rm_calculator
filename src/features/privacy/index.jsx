@@ -3,8 +3,13 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Database, Mail, ShieldCheck } from "lucide-react";
 import { PRIVACY_SECTIONS, PRIVACY_UPDATED_AT } from "@/lib/privacyContent";
 import { getDeletionRequestCopy, getSupportConfig } from "@/lib/supportConfig";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 export default function PrivacyPage() {
+  useDocumentMeta({
+    title: "데이터 처리 안내 | 1RM 계산기",
+    description: "저장하는 데이터, 사용자 제어 방법, 삭제 요청 절차를 안내합니다.",
+  });
   const deletionRequest = getDeletionRequestCopy(getSupportConfig(import.meta.env));
 
   return (

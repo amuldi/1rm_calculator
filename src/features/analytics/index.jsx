@@ -11,6 +11,7 @@ import { useUIStore } from "@/store/uiStore";
 import { useNutritionStore } from "@/store/nutritionStore";
 import { EXERCISE_MAP } from "@/constants/exercises";
 import { getEmptyAnalyticsCopy } from "@/lib/onboarding";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import {
   getDisplayWeightFromKg,
   getRecordRMKg,
@@ -91,6 +92,10 @@ function buildQualityInsight(filtered) {
 }
 
 export default function AnalyticsPage() {
+  useDocumentMeta({
+    title: "분석 | 훈련 볼륨과 1RM 변화 추이",
+    description: "기간별 세션 수, 총 볼륨, PR 후보, RPE 강도 해석과 영양 섭취 추이를 확인합니다.",
+  });
   const navigate = useNavigate();
   const { history } = useWorkoutStore();
   const { unit } = useUIStore();
