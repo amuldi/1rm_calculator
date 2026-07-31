@@ -1,10 +1,12 @@
 import React from "react";
 import { Sparkles } from "lucide-react";
 
-function buildMessage({ streak, weeklyVol, unit, caloriePct, proteinPct, hasNutritionGoal, hasMealsToday }) {
+function buildMessage({ streak, weeklyVol, unit, caloriePct, proteinPct, hasNutritionGoal, hasMealsToday, hasHistory }) {
   const workoutPart = streak > 0
     ? `${streak}일 연속 운동 중이며 이번 주 볼륨은 ${weeklyVol.toLocaleString()}${unit}입니다.`
-    : "최근 운동 기록이 없습니다. 오늘 세션을 기록해보세요.";
+    : hasHistory
+      ? "오늘은 아직 운동 기록이 없습니다. 오늘 세션을 기록해보세요."
+      : "최근 운동 기록이 없습니다. 오늘 세션을 기록해보세요.";
 
   if (!hasNutritionGoal) {
     return `${workoutPart} 영양 목표를 설정하면 식단 상태까지 함께 요약해드립니다.`;

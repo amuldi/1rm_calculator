@@ -159,6 +159,7 @@ export default function DashboardPage() {
           proteinPct={proteinPct}
           hasNutritionGoal={Boolean(nutritionGoal)}
           hasMealsToday={todayTotals.kcal > 0}
+          hasHistory={history.length > 0}
         />
 
         {!history.length ? (
