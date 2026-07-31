@@ -12,7 +12,7 @@ export default defineConfig({
       manifest: {
         name: "1RM 계산기",
         short_name: "1RM 계산기",
-        description: "단순하고 직관적인 1RM 계산 및 운동 기록 앱.",
+        description: "1RM 계산, 칼로리·단백질 목표 계산과 식단 기록을 함께 제공하는 무료 운동 기록 앱.",
         theme_color: "#0d0f0e",
         background_color: "#0d0f0e",
         display: "standalone",

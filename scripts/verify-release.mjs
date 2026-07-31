@@ -5,6 +5,7 @@ const REQUIRED_PUBLIC_ROUTES = [
   "/",
   "/dashboard",
   "/calculator",
+  "/nutrition",
   "/analytics",
   "/privacy",
   "/readiness",

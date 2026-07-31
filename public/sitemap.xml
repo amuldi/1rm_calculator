@@ -2,26 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://rm-calculator-3cf1d.web.app/</loc>
+    <lastmod>2026-07-31</lastmod>
     <priority>1.00</priority>
   </url>
   <url>
     <loc>https://rm-calculator-3cf1d.web.app/dashboard</loc>
+    <lastmod>2026-07-31</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://rm-calculator-3cf1d.web.app/calculator</loc>
+    <lastmod>2026-07-31</lastmod>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://rm-calculator-3cf1d.web.app/nutrition</loc>
+    <lastmod>2026-07-31</lastmod>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://rm-calculator-3cf1d.web.app/analytics</loc>
+    <lastmod>2026-07-31</lastmod>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://rm-calculator-3cf1d.web.app/privacy</loc>
+    <lastmod>2026-07-31</lastmod>
     <priority>0.40</priority>
   </url>
   <url>
     <loc>https://rm-calculator-3cf1d.web.app/readiness</loc>
+    <lastmod>2026-07-31</lastmod>
     <priority>0.30</priority>
   </url>
 </urlset>

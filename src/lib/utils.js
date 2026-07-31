@@ -193,6 +193,26 @@ export function getVolumeByDate(history, unit = DEFAULT_UNIT) {
     .map(([date, volume]) => ({ date, volume: Math.round(volume) }));
 }
 
+export async function shareOrCopy({ title, text, url }) {
+  if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+    try {
+      await navigator.share({ title, text, url });
+      return "shared";
+    } catch (error) {
+      if (error?.name === "AbortError") return "cancelled";
+    }
+  }
+  if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(url ? `${text}\n${url}` : text);
+      return "copied";
+    } catch {
+      return "unsupported";
+    }
+  }
+  return "unsupported";
+}
+
 export function getTrend(values) {
   const clean = values.map(Number).filter(Number.isFinite);
   if (clean.length < 3) return "stable";

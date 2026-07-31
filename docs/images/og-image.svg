@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0d0f0e"/>
+      <stop offset="1" stop-color="#141715"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00c8ff"/>
+      <stop offset="1" stop-color="#7c8cf8"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#00c8ff"/>
+      <stop offset="1" stop-color="#f4bd50"/>
+    </linearGradient>
+    <style>
+      .font { font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+      .tag { font-size: 20px; font-weight: 800; fill: #00c8ff; letter-spacing: 2px; }
+      .title { font-size: 76px; font-weight: 900; fill: #f3f7f3; }
+      .sub { font-size: 28px; font-weight: 600; fill: #a4b0a8; }
+      .chip { font-size: 19px; font-weight: 800; fill: #0d0f0e; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1080" cy="80" r="240" fill="#00c8ff" opacity="0.10"/>
+  <circle cx="90" cy="580" r="220" fill="#f4bd50" opacity="0.08"/>
+
+  <g class="font">
+    <rect x="80" y="88" width="72" height="72" rx="20" fill="url(#accent)"/>
+    <path d="M104 124 h24 M110 112 v24 M118 112 v24" stroke="#0d0f0e" stroke-width="6" stroke-linecap="round"/>
+
+    <text x="172" y="120" class="tag">FREE · NO SIGNUP · PWA</text>
+    <text x="172" y="164" font-size="34" font-weight="900" fill="#f3f7f3">1RM 계산기</text>
+
+    <text x="80" y="280" class="title">1RM · 칼로리 ·</text>
+    <text x="80" y="368" class="title" fill="url(#titleGrad)">단백질 계산기</text>
+
+    <text x="80" y="428" class="sub">종목별 1RM 자동 계산부터 칼로리·단백질 목표, 식단 기록까지</text>
+    <text x="80" y="466" class="sub">로그인 없이 브라우저에서 바로 쓰는 무료 운동 기록 PWA</text>
+
+    <rect x="80" y="516" width="188" height="48" rx="24" fill="#eaf9ff"/>
+    <text x="106" y="547" class="chip">벤치프레스 · 스쿼트</text>
+
+    <rect x="284" y="516" width="192" height="48" rx="24" fill="#fff4dc"/>
+    <text x="310" y="547" class="chip">BMR/TDEE 계산</text>
+
+    <rect x="492" y="516" width="164" height="48" rx="24" fill="#eaf9ff"/>
+    <text x="518" y="547" class="chip">PWA 오프라인</text>
+  </g>
+</svg>

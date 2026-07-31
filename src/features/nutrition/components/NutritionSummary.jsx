@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Flame, Target } from "lucide-react";
+import { Flame, Target, Share2, Check } from "lucide-react";
 import { Card } from "@/components/common/Card";
+import { shareOrCopy } from "@/lib/utils";
 
 const ROWS = [
   { key: "kcal", label: "칼로리", unit: "kcal" },
@@ -20,11 +21,42 @@ function buildInsight(proteinShortfallStreak, goal) {
 
 export function NutritionSummary({ dailyTotals, goal, progress, proteinShortfallStreak = 0 }) {
   const insight = buildInsight(proteinShortfallStreak, goal);
+  const [shareStatus, setShareStatus] = useState(null);
+
+  const handleShare = async () => {
+    const kcal = Math.round(dailyTotals.kcal);
+    const protein = Math.round(dailyTotals.protein);
+    const text = goal
+      ? `오늘 칼로리 ${kcal}/${goal.calorieTarget}kcal, 단백질 ${protein}/${goal.proteinTarget}g을 기록했어요!`
+      : `오늘 칼로리 ${kcal}kcal, 단백질 ${protein}g을 기록했어요!`;
+    const status = await shareOrCopy({
+      title: "1RM 계산기 · 영양 기록",
+      text,
+      url: "https://rm-calculator-3cf1d.web.app/nutrition",
+    });
+    if (status === "shared" || status === "copied") {
+      setShareStatus(status);
+      setTimeout(() => setShareStatus(null), 2000);
+    }
+  };
+
   return (
     <Card className="p-5 space-y-4">
-      <div className="flex items-center gap-2">
-        <Flame size={15} style={{ color: "var(--accent)" }} />
-        <span className="section-label">오늘의 영양 섭취</span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Flame size={15} style={{ color: "var(--accent)" }} />
+          <span className="section-label">오늘의 영양 섭취</span>
+        </div>
+        <button
+          type="button"
+          onClick={handleShare}
+          className="flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-md transition-colors"
+          style={{ color: "var(--text-2)" }}
+          aria-label="오늘의 영양 섭취 공유"
+        >
+          {shareStatus ? <Check size={12} /> : <Share2 size={12} />}
+          {shareStatus === "shared" ? "공유됨" : shareStatus === "copied" ? "링크 복사됨" : "공유"}
+        </button>
       </div>
 
       {!goal ? (

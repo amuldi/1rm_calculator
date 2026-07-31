@@ -1,16 +1,30 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trophy, ChevronDown, ChevronUp, Sparkles, ShieldCheck } from "lucide-react";
+import { Trophy, ChevronDown, ChevronUp, Sparkles, ShieldCheck, Share2, Check } from "lucide-react";
 import { getPercentages } from "../utils/formulas";
 import { useUIStore } from "@/store/uiStore";
+import { shareOrCopy } from "@/lib/utils";
 
 export function ResultCard({ result, allResults, isPR, goalProgress, currentGoal, confidence, estimateRange }) {
   const [showTable, setShowTable] = useState(false);
+  const [shareStatus, setShareStatus] = useState(null);
   const { unit } = useUIStore();
 
   if (result == null) return null;
 
   const percentages = getPercentages(result);
+
+  const handleShare = async () => {
+    const status = await shareOrCopy({
+      title: "1RM 계산기",
+      text: `1RM 계산기로 예상 1RM ${result}${unit}를 확인했어요!`,
+      url: "https://rm-calculator-3cf1d.web.app/calculator",
+    });
+    if (status === "shared" || status === "copied") {
+      setShareStatus(status);
+      setTimeout(() => setShareStatus(null), 2000);
+    }
+  };
 
   return (
     <motion.div
@@ -32,8 +46,21 @@ export function ResultCard({ result, allResults, isPR, goalProgress, currentGoal
           </motion.div>
         )}
 
-        <div>
+        <div className="flex items-center justify-between">
           <p className="section-label mb-2">예상 1RM</p>
+          <button
+            type="button"
+            onClick={handleShare}
+            className="flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-md transition-colors"
+            style={{ color: "var(--text-2)" }}
+            aria-label="1RM 결과 공유"
+          >
+            {shareStatus ? <Check size={12} /> : <Share2 size={12} />}
+            {shareStatus === "shared" ? "공유됨" : shareStatus === "copied" ? "링크 복사됨" : "공유"}
+          </button>
+        </div>
+
+        <div>
           <motion.div
             key={result}
             initial={{ scale: 0.75, opacity: 0 }}

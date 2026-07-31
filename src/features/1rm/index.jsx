@@ -3,6 +3,7 @@ import { Calculator } from "./components/Calculator";
 import { ResultCard } from "./components/ResultCard";
 import { GoalSetter } from "./components/GoalSetter";
 import { RecordList } from "./components/RecordList";
+import { FormulaGuide } from "./components/FormulaGuide";
 import { use1RM } from "./hooks/use1RM";
 
 export default function OneRMPage() {
@@ -63,6 +64,7 @@ export default function OneRMPage() {
 
         <GoalSetter exerciseId={exerciseId} />
         <RecordList />
+        <FormulaGuide />
       </div>
     </div>
   );
