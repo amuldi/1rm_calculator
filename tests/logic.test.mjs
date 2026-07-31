@@ -92,6 +92,20 @@ import {
   normalizeWorkoutRecord,
   toDateInputValue,
 } from "../src/lib/utils.js";
+import {
+  calculateBMR,
+  calculateTDEE,
+  getCalorieTarget,
+  getProteinTarget,
+  getMacroTargets,
+  sumDailyMacros,
+  getMacroProgress,
+  getConsecutiveShortfallDays,
+  normalizeMealRecord,
+  normalizeNutritionGoal,
+  normalizeFavorite,
+  isValidImportedMeal,
+} from "../src/features/nutrition/utils/nutritionMath.js";
 
 test("calculates expected 1RM for supported formulas", () => {
   assert.equal(calculate1RM(100, 5, "epley"), 116.7);
@@ -194,6 +208,51 @@ test("validates and normalizes backup payloads", () => {
   assert.equal(parsed.deletedRecords[0].id, "deleted-1");
   assert.equal(parsed.stats.deletedGoalCount, 1);
   assert.equal(parsed.deletedGoals[0].id, "deadlift");
+});
+
+test("includes nutrition data in backup payloads and round-trips it", () => {
+  const payload = createBackupPayload({
+    history: [],
+    goals: {},
+    meals: [
+      { date: "2026-06-21T08:00:00.000Z", mealType: "breakfast", foodName: "닭가슴살", kcal: 200, protein: 30, carbs: 5, fat: 5 },
+      { foodName: "unknown food, no kcal" },
+    ],
+    nutritionGoal: { calorieTarget: 2500, proteinTarget: 160, carbsTarget: 250, fatTarget: 70, mode: "bulk", weightKg: 80 },
+    deletedMeals: [{ id: "deleted-meal-1", deletedAt: "2026-06-21T00:00:00.000Z" }],
+    favorites: [{ foodName: "닭가슴살 100g", kcal: 165, protein: 31, carbs: 0, fat: 3.6 }],
+  });
+
+  const parsed = parseBackupPayload(payload);
+  assert.equal(parsed.stats.mealCount, 1);
+  assert.equal(parsed.stats.droppedMeals, 1);
+  assert.equal(parsed.meals[0].foodName, "닭가슴살");
+  assert.equal(parsed.meals[0].mealType, "breakfast");
+  assert.equal(parsed.nutritionGoal.calorieTarget, 2500);
+  assert.equal(parsed.stats.hasNutritionGoal, true);
+  assert.equal(parsed.stats.deletedMealCount, 1);
+  assert.equal(parsed.stats.favoriteCount, 1);
+  assert.equal(parsed.favorites[0].foodName, "닭가슴살 100g");
+});
+
+test("restores legacy backups that predate the nutrition schema", () => {
+  const legacyPayload = {
+    version: "2.2",
+    schema: "1rm-calculator.backup",
+    history: [
+      { exerciseId: "squat", weight: 120, reps: 5, rm: 140, unit: "kg", date: "2026-06-21T00:00:00.000Z" },
+    ],
+    goals: {},
+  };
+
+  const parsed = parseBackupPayload(legacyPayload);
+  assert.equal(parsed.history.length, 1);
+  assert.deepEqual(parsed.meals, []);
+  assert.equal(parsed.nutritionGoal, null);
+  assert.deepEqual(parsed.deletedMeals, []);
+  assert.deepEqual(parsed.favorites, []);
+  assert.equal(parsed.stats.mealCount, 0);
+  assert.equal(parsed.stats.hasNutritionGoal, false);
 });
 
 test("rejects backup payloads without valid importable data", () => {
@@ -702,6 +761,105 @@ test("serializes Firestore payloads to the production schema", () => {
   });
   assert.equal(deleted.reason, undefined);
   assert.equal(isValidDeletedRecordDocument(deleted, "r1"), true);
+});
+
+test("estimates BMR with the Mifflin-St Jeor formula by gender", () => {
+  assert.equal(calculateBMR({ weightKg: 80, heightCm: 180, age: 30, gender: "male" }), 1780);
+  assert.equal(calculateBMR({ weightKg: 60, heightCm: 165, age: 25, gender: "female" }), 1345);
+  assert.equal(calculateBMR({ weightKg: 0 }), null);
+});
+
+test("scales BMR to TDEE by activity level", () => {
+  assert.equal(calculateTDEE(1780, "moderate"), 2759);
+  assert.equal(calculateTDEE(null), null);
+});
+
+test("adjusts calorie target by goal mode", () => {
+  assert.equal(getCalorieTarget(2759, "bulk"), 3173);
+  assert.equal(getCalorieTarget(2759, "cut"), 2207);
+  assert.equal(getCalorieTarget(2759, "maintain"), 2759);
+});
+
+test("derives protein target from body weight and goal mode", () => {
+  assert.equal(getProteinTarget(80, "bulk"), 160);
+  assert.equal(getProteinTarget(80, "maintain"), 144);
+  assert.equal(getProteinTarget(0, "bulk"), null);
+});
+
+test("computes full macro target set with carbs filling remaining calories", () => {
+  const targets = getMacroTargets({
+    weightKg: 80,
+    heightCm: 180,
+    age: 30,
+    gender: "male",
+    activityLevel: "moderate",
+    goalMode: "bulk",
+  });
+  assert.equal(targets.bmr, 1780);
+  assert.equal(targets.tdee, 2759);
+  assert.equal(targets.calorieTarget, 3173);
+  assert.equal(targets.proteinTarget, 160);
+  assert.equal(targets.fatTarget, 88);
+  assert.equal(targets.carbsTarget, 435);
+});
+
+test("sums daily macro totals from meal records", () => {
+  const totals = sumDailyMacros([
+    { kcal: 500, protein: 30, carbs: 50, fat: 10 },
+    { kcal: 300, protein: 20, carbs: 20, fat: 5 },
+  ]);
+  assert.deepEqual(totals, { kcal: 800, protein: 50, carbs: 70, fat: 15 });
+});
+
+test("clamps macro progress percentage to 0-100", () => {
+  assert.equal(getMacroProgress(120, 150), 80);
+  assert.equal(getMacroProgress(200, 150), 100);
+  assert.equal(getMacroProgress(50, 0), 0);
+});
+
+test("normalizes meal records with defaults and clamped fields", () => {
+  const meal = normalizeMealRecord({ foodName: "  닭가슴살  ", kcal: -5, mealType: "brunch" });
+  assert.equal(meal.foodName, "닭가슴살");
+  assert.equal(meal.kcal, 0);
+  assert.equal(meal.mealType, "snack");
+  assert.equal(meal.unit, "g");
+  assert.equal(meal.syncVersion, 1);
+  assert.ok(meal.id);
+  assert.ok(meal.createdAt);
+});
+
+test("validates importable meal shape before normalizing", () => {
+  assert.equal(isValidImportedMeal({ foodName: "닭가슴살", kcal: 200 }), true);
+  assert.equal(isValidImportedMeal({ foodName: "", kcal: 200 }), false);
+  assert.equal(isValidImportedMeal({ foodName: "닭가슴살", kcal: -1 }), false);
+  assert.equal(isValidImportedMeal({ foodName: "닭가슴살", kcal: 200, date: "not-a-date" }), false);
+});
+
+test("normalizes nutrition goals and rejects incomplete ones", () => {
+  const goal = normalizeNutritionGoal({ calorieTarget: 2500, proteinTarget: 160, mode: "bulk" });
+  assert.equal(goal.calorieTarget, 2500);
+  assert.equal(goal.mode, "bulk");
+  assert.equal(goal.syncVersion, 1);
+  assert.equal(normalizeNutritionGoal({ calorieTarget: 2500 }), null);
+  assert.equal(normalizeNutritionGoal(null), null);
+});
+
+test("normalizes favorite food shortcuts", () => {
+  const favorite = normalizeFavorite({ foodName: "닭가슴살 100g", kcal: 165, protein: 31 });
+  assert.equal(favorite.foodName, "닭가슴살 100g");
+  assert.equal(favorite.kcal, 165);
+  assert.equal(favorite.carbs, 0);
+  assert.ok(favorite.id);
+});
+
+test("counts consecutive days under a macro target from most recent", () => {
+  const days = [
+    { date: "d3", protein: 100 },
+    { date: "d2", protein: 90 },
+    { date: "d1", protein: 150 },
+  ];
+  assert.equal(getConsecutiveShortfallDays(days, 140), 2);
+  assert.equal(getConsecutiveShortfallDays(days, 0), 0);
 });
 
 test("sync service writes merged data and prunes stale tombstones", async () => {

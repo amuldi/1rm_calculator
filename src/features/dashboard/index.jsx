@@ -2,16 +2,19 @@ import React, { useMemo } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import { Dumbbell, ChevronRight, Flame, Activity, BarChart2, TrendingDown, TrendingUp, Minus } from "lucide-react";
+import { Dumbbell, ChevronRight, Flame, Activity, BarChart2, TrendingDown, TrendingUp, Minus, Utensils } from "lucide-react";
 import { StatsCard } from "./components/StatsCard";
 import { PRBoard } from "./components/PRBoard";
 import { GoalProgress } from "./components/GoalProgress";
+import { ConditionSummary } from "./components/ConditionSummary";
 import { useWorkoutStore } from "@/store/workoutStore";
 import { useGoalStore } from "@/store/goalStore";
 import { useUIStore } from "@/store/uiStore";
+import { useNutritionStore } from "@/store/nutritionStore";
 import { EXERCISE_MAP } from "@/constants/exercises";
 import { getEmptyDashboardCopy } from "@/lib/onboarding";
-import { getRecordDisplay, getRecordRMKg, getRecordVolume, getTrend } from "@/lib/utils";
+import { getRecordDisplay, getRecordRMKg, getRecordVolume, getTrend, toDateInputValue } from "@/lib/utils";
+import { getMacroProgress } from "@/features/nutrition/utils/nutritionMath";
 
 const GREETING = () => {
   const h = new Date().getHours();
@@ -81,10 +84,19 @@ export default function DashboardPage() {
   const { history, getPRByExercise, getWeeklyVolume, getStreakDays } = useWorkoutStore();
   const { goals } = useGoalStore();
   const { unit } = useUIStore();
+  const { meals: nutritionMeals, goal: nutritionGoal, getDailyTotals: getNutritionDailyTotals } = useNutritionStore();
 
   const prMap = useMemo(() => getPRByExercise(), [history]);
   const weeklyVol = useMemo(() => Math.round(getWeeklyVolume(unit)), [getWeeklyVolume, history, unit]);
   const streak = useMemo(() => getStreakDays(), [getStreakDays, history]);
+
+  const todayKey = useMemo(() => toDateInputValue(), []);
+  const todayTotals = useMemo(
+    () => getNutritionDailyTotals(todayKey),
+    [getNutritionDailyTotals, nutritionMeals, todayKey]
+  );
+  const caloriePct = getMacroProgress(todayTotals.kcal, nutritionGoal?.calorieTarget);
+  const proteinPct = getMacroProgress(todayTotals.protein, nutritionGoal?.proteinTarget);
 
   const stats = useMemo(() => {
     if (!history.length) return null;
@@ -119,6 +131,35 @@ export default function DashboardPage() {
             </p>
           )}
         </motion.div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <StatsCard
+            label="오늘 칼로리"
+            value={todayTotals.kcal > 0 ? Math.round(todayTotals.kcal).toLocaleString() : "—"}
+            unit={todayTotals.kcal > 0 ? "kcal" : undefined}
+            sub={nutritionGoal ? `목표 ${nutritionGoal.calorieTarget}kcal · ${caloriePct}%` : "목표 미설정"}
+            icon={Utensils}
+            delay={0}
+          />
+          <StatsCard
+            label="오늘 단백질"
+            value={todayTotals.protein > 0 ? Math.round(todayTotals.protein).toLocaleString() : "—"}
+            unit={todayTotals.protein > 0 ? "g" : undefined}
+            sub={nutritionGoal ? `목표 ${nutritionGoal.proteinTarget}g · ${proteinPct}%` : "목표 미설정"}
+            icon={Flame}
+            delay={0.05}
+          />
+        </div>
+
+        <ConditionSummary
+          streak={streak}
+          weeklyVol={weeklyVol}
+          unit={unit}
+          caloriePct={caloriePct}
+          proteinPct={proteinPct}
+          hasNutritionGoal={Boolean(nutritionGoal)}
+          hasMealsToday={todayTotals.kcal > 0}
+        />
 
         {!history.length ? (
           <motion.div

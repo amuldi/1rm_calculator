@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import { useUIStore } from "@/store/uiStore";
 import { useWorkoutStore } from "@/store/workoutStore";
 import { useGoalStore } from "@/store/goalStore";
+import { useNutritionStore } from "@/store/nutritionStore";
 import { useAuthStore } from "@/store/authStore";
 import { useSyncStore } from "@/store/syncStore";
 import { useDarkMode } from "@/hooks/useDarkMode";
@@ -61,6 +62,10 @@ export default function ProfilePage() {
   const { history, deletedRecords, clearHistory, importHistory, importDeletedRecords } = useWorkoutStore();
   const { goals, deletedGoals, importGoals, importDeletedGoals } = useGoalStore();
   const {
+    meals, deletedMeals, goal: nutritionGoal, favorites,
+    importMeals, importDeletedMeals, importGoal: importNutritionGoal, importFavorites,
+  } = useNutritionStore();
+  const {
     status: authStatus,
     user,
     error: authError,
@@ -91,7 +96,10 @@ export default function ProfilePage() {
   };
 
   const handleExport = () => {
-    const data = createBackupPayload({ history, goals, deletedRecords, deletedGoals });
+    const data = createBackupPayload({
+      history, goals, deletedRecords, deletedGoals,
+      meals, nutritionGoal, deletedMeals, favorites,
+    });
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -114,8 +122,13 @@ export default function ProfilePage() {
         importGoals(parsed.goals);
         importDeletedRecords(parsed.deletedRecords);
         importDeletedGoals(parsed.deletedGoals);
+        importMeals(parsed.meals);
+        importNutritionGoal(parsed.nutritionGoal);
+        importDeletedMeals(parsed.deletedMeals);
+        importFavorites(parsed.favorites);
         const skipped = parsed.stats.droppedRecords ? ` · ${parsed.stats.droppedRecords}개 제외` : "";
-        showToast(`${parsed.stats.recordCount}개 기록, 목표 ${parsed.stats.goalCount}개를 불러왔습니다${skipped}.`);
+        const mealPart = parsed.stats.mealCount ? `, 식사 ${parsed.stats.mealCount}개` : "";
+        showToast(`${parsed.stats.recordCount}개 기록, 목표 ${parsed.stats.goalCount}개${mealPart}를 불러왔습니다${skipped}.`);
       } catch (error) {
         showToast(error?.message || "파일 형식이 올바르지 않습니다.", "error");
       }
@@ -182,7 +195,7 @@ export default function ProfilePage() {
           <div>
             <p className="text-base font-bold" style={{ color: "var(--text-1)" }}>1RM 계산기</p>
             <p className="text-sm mt-0.5" style={{ color: "var(--text-2)" }}>
-              {history.length}개 기록 · 목표 {Object.keys(goals).length}개
+              {history.length}개 기록 · 목표 {Object.keys(goals).length}개 · 식사 {meals.length}개
             </p>
           </div>
         </motion.div>

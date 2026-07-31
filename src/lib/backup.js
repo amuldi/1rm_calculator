@@ -1,6 +1,12 @@
 import { EXERCISE_MAP } from "../constants/exercises.js";
 import { mergeDeletedEntities } from "./syncModel.js";
 import { getGoalKg, normalizeWorkoutRecord } from "./utils.js";
+import {
+  isValidImportedMeal,
+  normalizeMealRecord,
+  normalizeNutritionGoal,
+  normalizeFavorite,
+} from "../features/nutrition/utils/nutritionMath.js";
 
 function isPlainObject(value) {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -46,15 +52,28 @@ function normalizeImportGoals(goals) {
   }, {});
 }
 
-export function createBackupPayload({ history = [], goals = {}, deletedRecords = [], deletedGoals = [] } = {}) {
+export function createBackupPayload({
+  history = [],
+  goals = {},
+  deletedRecords = [],
+  deletedGoals = [],
+  meals = [],
+  nutritionGoal = null,
+  deletedMeals = [],
+  favorites = [],
+} = {}) {
   return {
-    version: "2.2",
+    version: "2.3",
     schema: "1rm-calculator.backup",
     exportedAt: new Date().toISOString(),
     history,
     goals,
     deletedRecords,
     deletedGoals,
+    meals,
+    nutritionGoal,
+    deletedMeals,
+    favorites,
   };
 }
 
@@ -77,7 +96,19 @@ export function parseBackupPayload(payload) {
   const droppedRecords = rawHistory.length - history.length;
   const goalCount = Object.keys(goals).length;
 
-  if (!history.length && !goalCount) {
+  const rawMeals = Array.isArray(payload.meals) ? payload.meals : [];
+  const meals = rawMeals.filter(isValidImportedMeal).map(normalizeMealRecord);
+  const droppedMeals = rawMeals.length - meals.length;
+  const nutritionGoal = normalizeNutritionGoal(payload.nutritionGoal);
+  const deletedMeals = mergeDeletedEntities(
+    Array.isArray(payload.deletedMeals) ? payload.deletedMeals : [],
+    []
+  );
+  const favorites = (Array.isArray(payload.favorites) ? payload.favorites : [])
+    .filter((item) => isPlainObject(item) && typeof item.foodName === "string" && item.foodName.trim())
+    .map(normalizeFavorite);
+
+  if (!history.length && !goalCount && !meals.length && !nutritionGoal && !favorites.length) {
     throw new Error("가져올 수 있는 운동 기록이나 목표가 없습니다.");
   }
 
@@ -86,12 +117,21 @@ export function parseBackupPayload(payload) {
     goals,
     deletedRecords,
     deletedGoals,
+    meals,
+    nutritionGoal,
+    deletedMeals,
+    favorites,
     stats: {
       recordCount: history.length,
       goalCount,
       deletedRecordCount: deletedRecords.length,
       deletedGoalCount: deletedGoals.length,
       droppedRecords,
+      mealCount: meals.length,
+      droppedMeals,
+      deletedMealCount: deletedMeals.length,
+      favoriteCount: favorites.length,
+      hasNutritionGoal: Boolean(nutritionGoal),
     },
   };
 }

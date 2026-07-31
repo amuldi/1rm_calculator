@@ -88,6 +88,7 @@
     overflow-x: hidden;
     line-height: 1.6;
     transition: background-color 0.3s, color 0.3s;
+    overscroll-behavior-y: none;
   }
 
   input[type="number"]::-webkit-inner-spin-button,

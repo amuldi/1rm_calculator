@@ -1,11 +1,12 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LayoutDashboard, Dumbbell, BarChart3, User } from "lucide-react";
+import { LayoutDashboard, Dumbbell, Utensils, BarChart3, User } from "lucide-react";
 
 const TABS = [
   { path: "/dashboard",  icon: LayoutDashboard, label: "홈" },
   { path: "/calculator", icon: Dumbbell,        label: "계산기" },
+  { path: "/nutrition",  icon: Utensils,        label: "영양" },
   { path: "/analytics",  icon: BarChart3,       label: "분석" },
   { path: "/profile",    icon: User,            label: "프로필" },
 ];
@@ -16,7 +17,7 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-50"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom)]"
       style={{
         background: "var(--nav-bg)",
         borderTop: "1px solid var(--nav-border)",
@@ -30,7 +31,7 @@ export default function BottomNav() {
             <button
               key={path}
               onClick={() => navigate(path)}
-              className="relative flex flex-col items-center justify-center gap-1 px-4 py-1.5 min-w-[56px]"
+              className="relative flex-1 flex flex-col items-center justify-center gap-1 py-1.5 min-w-[44px]"
             >
               {active && (
                 <motion.div

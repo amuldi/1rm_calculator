@@ -10,6 +10,29 @@ const SHOULD_START_SERVER = process.env.QA_START_SERVER === "1";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// Fixture dates are relative to "now" so the flow stays valid (workout dates inside the
+// analytics 30-day window, goal target dates in the future) no matter when this runs.
+function shiftDays(offset) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d;
+}
+function toISODateInput(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+function toDotDateLabel(date) {
+  return `${date.getFullYear()}. ${date.getMonth() + 1}. ${date.getDate()}.`;
+}
+
+const WORKOUT_DATE_INPUT = toISODateInput(shiftDays(-10));
+const EDIT_DATE = shiftDays(-11);
+const EDIT_DATE_INPUT = toISODateInput(EDIT_DATE);
+const EDIT_DATE_LABEL = toDotDateLabel(EDIT_DATE);
+const GOAL_TARGET_DATE_INPUT = toISODateInput(shiftDays(28));
+
 function spawnProcess(command, args, options = {}) {
   return spawn(command, args, {
     stdio: options.stdio || "ignore",
@@ -197,7 +220,7 @@ async function runFlow(client) {
       setValue(inputs.find((input) => input.placeholder === "5"), "5");
       setValue(inputs.find((input) => input.placeholder === "1"), "3");
       setValue(inputs.find((input) => input.placeholder === "8"), "8");
-      setValue(inputs.find((input) => input.type === "date"), "2026-06-20");
+      setValue(inputs.find((input) => input.type === "date"), ${JSON.stringify(WORKOUT_DATE_INPUT)});
       const note = document.querySelector("textarea");
       textareaSetter.call(note, "검증 기록");
       note.dispatchEvent(new Event("input", { bubbles: true }));
@@ -244,14 +267,14 @@ async function runFlow(client) {
         input.dispatchEvent(new Event("change", { bubbles: true }));
       };
       setValue(inputs.find((input) => input.getAttribute("aria-label") === "수정할 세트 수"), "4");
-      setValue(inputs.find((input) => input.getAttribute("aria-label") === "수정할 날짜"), "2026-06-19");
+      setValue(inputs.find((input) => input.getAttribute("aria-label") === "수정할 날짜"), ${JSON.stringify(EDIT_DATE_INPUT)});
       [...document.querySelectorAll("button")].find((button) => button.innerText.includes("저장"))?.click();
     })()
   `);
   await waitForText(client, "4세트");
   assertCheck(checks, "edit record", await evalJs(client, `
     document.body.innerText.includes("4세트") &&
-    document.body.innerText.includes("2026. 6. 19.")
+    document.body.innerText.includes(${JSON.stringify(EDIT_DATE_LABEL)})
   `));
 
   await clickButton(client, "운동을 선택하세요");
@@ -268,7 +291,7 @@ async function runFlow(client) {
         input.dispatchEvent(new Event("change", { bubbles: true }));
       };
       setValue(inputs.find((input) => input.placeholder && input.placeholder.includes("목표 1RM")), "140");
-      setValue(inputs.find((input) => input.getAttribute("aria-label") === "목표 날짜"), "2026-07-19");
+      setValue(inputs.find((input) => input.getAttribute("aria-label") === "목표 날짜"), ${JSON.stringify(GOAL_TARGET_DATE_INPUT)});
       [...document.querySelectorAll("button")].find((button) => button.innerText.includes("저장"))?.click();
     })()
   `);
@@ -278,11 +301,58 @@ async function runFlow(client) {
     (document.body.innerText.includes("주당 약") || document.body.innerText.includes("주당 필요 증가량"))
   `));
 
+  await clickButton(client, "영양");
+  await waitForText(client, "영양 기록");
+  await evalJs(client, `
+    (() => {
+      const inputs = [...document.querySelectorAll("input")];
+      const inputSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+      const setValue = (input, value) => {
+        if (!input) throw new Error("Expected meal input was not found");
+        inputSetter.call(input, value);
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      };
+      setValue(inputs.find((input) => input.placeholder === "예: 닭가슴살 샐러드"), "검증 식사");
+      setValue(inputs.find((input) => input.placeholder === "350"), "350");
+      setValue(inputs.find((input) => input.placeholder === "30"), "30");
+      [...document.querySelectorAll("button")].find((button) => button.innerText.includes("식사 추가하기"))?.click();
+    })()
+  `);
+  await waitForText(client, "검증 식사");
+  assertCheck(checks, "nutrition meal logged", await evalJs(client, `
+    document.body.innerText.includes("검증 식사") &&
+    document.body.innerText.includes("식사 목록") &&
+    document.body.innerText.includes("350kcal")
+  `));
+
+  await evalJs(client, `
+    (() => {
+      const inputs = [...document.querySelectorAll("input")];
+      const inputSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+      const setValue = (input, value) => {
+        if (!input) throw new Error("Expected goal input was not found");
+        inputSetter.call(input, value);
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      };
+      setValue(inputs.find((input) => input.placeholder === "70"), "80");
+      [...document.querySelectorAll("button")].find((button) => button.innerText.includes("목표로 저장"))?.click();
+    })()
+  `);
+  await waitForText(client, "현재 목표");
+  assertCheck(checks, "nutrition goal auto-calc", await evalJs(client, `
+    document.body.innerText.includes("자동 계산 결과") &&
+    document.body.innerText.includes("현재 목표")
+  `));
+
   await clickButton(client, "홈");
   await waitForText(client, "최근 4주");
   assertCheck(checks, "dashboard summary", await evalJs(client, `
     document.body.innerText.includes("최근 4주") &&
-    document.body.innerText.includes("목표 달성률")
+    document.body.innerText.includes("목표 달성률") &&
+    document.body.innerText.includes("오늘의 컨디션") &&
+    document.body.innerText.includes("오늘 칼로리")
   `));
 
   await clickButton(client, "프로필");
@@ -291,7 +361,8 @@ async function runFlow(client) {
     document.body.innerText.includes("데이터 백업") &&
     document.body.innerText.includes("데이터 처리 안내") &&
     document.body.innerText.includes("출시 준비도") &&
-    document.body.innerText.includes("진단 정보")
+    document.body.innerText.includes("진단 정보") &&
+    document.body.innerText.includes("식사")
   `));
 
   await client.send("Page.navigate", { url: `${APP_URL}/privacy?skipSplash` });

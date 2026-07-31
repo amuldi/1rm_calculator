@@ -8,6 +8,7 @@ import { useDarkMode } from "@/hooks/useDarkMode";
 const NAV_ITEMS = [
   { path: "/dashboard",  label: "대시보드" },
   { path: "/calculator", label: "1RM 계산기" },
+  { path: "/nutrition",  label: "영양" },
   { path: "/analytics",  label: "분석" },
   { path: "/profile",    label: "프로필" },
 ];
@@ -25,14 +26,14 @@ export default function TopNav() {
     <>
       {/* ── Top bar ── */}
       <header
-        className="fixed top-0 left-0 right-0 z-50 h-14"
+        className="fixed top-0 left-0 right-0 z-50 h-[calc(3.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)]"
         style={{
           background: "var(--nav-bg)",
           borderBottom: "1px solid var(--nav-border)",
           backdropFilter: "blur(20px)",
         }}
       >
-        <div className="max-w-4xl mx-auto h-full px-5 flex items-center gap-6">
+        <div className="max-w-4xl mx-auto h-14 px-5 flex items-center gap-6">
 
           {/* Logo */}
           <button
@@ -138,7 +139,7 @@ export default function TopNav() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="fixed top-0 right-0 bottom-0 z-50 w-64 md:hidden flex flex-col"
+              className="fixed top-0 right-0 bottom-0 z-50 w-64 md:hidden flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
               style={{ background: "var(--surface)", borderLeft: "1px solid var(--border)" }}
             >
               {/* Drawer header */}

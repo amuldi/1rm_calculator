@@ -10,6 +10,7 @@ import { useDarkMode } from "./hooks/useDarkMode";
 
 const DashboardPage = lazy(() => import("./features/dashboard/index"));
 const OneRMPage     = lazy(() => import("./features/1rm/index"));
+const NutritionPage = lazy(() => import("./features/nutrition/index"));
 const AnalyticsPage = lazy(() => import("./features/analytics/index"));
 const ProfilePage   = lazy(() => import("./features/profile/index"));
 const PrivacyPage   = lazy(() => import("./features/privacy/index"));
@@ -48,6 +49,7 @@ function AppRoutes() {
               <Route path="/"           element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard"  element={<DashboardPage />} />
               <Route path="/calculator" element={<OneRMPage />} />
+              <Route path="/nutrition"  element={<NutritionPage />} />
               <Route path="/analytics"  element={<AnalyticsPage />} />
               <Route path="/profile"    element={<ProfilePage />} />
               <Route path="/privacy"    element={<PrivacyPage />} />

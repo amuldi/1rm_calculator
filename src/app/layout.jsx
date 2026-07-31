@@ -6,8 +6,8 @@ export default function Layout({ children }) {
   return (
     <div className="min-h-screen w-full overflow-x-hidden">
       <TopNav />
-      {/* pt-14 = TopNav height, pb-16 on mobile for BottomNav */}
-      <main className="pt-14 pb-16 md:pb-6">
+      {/* pt matches TopNav height + safe-area, pb matches BottomNav height + safe-area on mobile */}
+      <main className="pt-[calc(3.5rem+env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-6">
         {children}
       </main>
       <BottomNav />

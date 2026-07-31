@@ -5,8 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { VolumeChart } from "./components/VolumeChart";
 import { StrengthCurve } from "./components/StrengthCurve";
 import { TrendSummary } from "./components/TrendSummary";
+import { NutritionTrendChart } from "./components/NutritionTrendChart";
 import { useWorkoutStore } from "@/store/workoutStore";
 import { useUIStore } from "@/store/uiStore";
+import { useNutritionStore } from "@/store/nutritionStore";
 import { EXERCISE_MAP } from "@/constants/exercises";
 import { getEmptyAnalyticsCopy } from "@/lib/onboarding";
 import {
@@ -92,7 +94,9 @@ export default function AnalyticsPage() {
   const navigate = useNavigate();
   const { history } = useWorkoutStore();
   const { unit } = useUIStore();
+  const { meals: nutritionMeals, getRecentDailyTotals, goal: nutritionGoal } = useNutritionStore();
   const [period, setPeriod] = useState(30);
+  const nutritionTrend = useMemo(() => getRecentDailyTotals(7), [getRecentDailyTotals, nutritionMeals]);
 
   const filtered = useMemo(() => {
     if (!period) return history;
@@ -155,6 +159,10 @@ export default function AnalyticsPage() {
             ))}
           </div>
         </div>
+
+        {nutritionTrend.length > 1 && (
+          <NutritionTrendChart data={nutritionTrend} calorieTarget={nutritionGoal?.calorieTarget} />
+        )}
 
         {!filtered.length ? (
           <motion.div
