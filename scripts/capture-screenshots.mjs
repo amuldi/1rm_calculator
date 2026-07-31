@@ -11,6 +11,7 @@ const SHOULD_START_SERVER = process.env.QA_START_SERVER === "1";
 const OUT_DIR = fileURLToPath(new URL("../docs/images", import.meta.url));
 
 const VIEWPORT = { width: 390, height: 844, deviceScaleFactor: 2, mobile: true };
+const DESKTOP_VIEWPORT = { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false };
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -160,13 +161,27 @@ function setValueSnippet(placeholderOrLabel, matchBy, value) {
 async function selectExercise(client, optionText) {
   // Structural lookup (label -> next sibling's trigger button) instead of matching the
   // trigger's own text, because after the first pick it no longer reads "운동을 선택하세요".
+  // Polls instead of a fixed sleep since the dropdown's open animation timing can vary
+  // (e.g. slower first paint right after a cold dev-server start).
   await evalJs(client, `
     (async () => {
-      const label = [...document.querySelectorAll("label")].find((el) => el.textContent === "운동 종목");
-      const trigger = label?.nextElementSibling?.querySelector("button");
-      trigger?.click();
-      await new Promise((resolve) => setTimeout(resolve, 250));
-      const option = [...document.querySelectorAll("button")].find((el) => el.innerText.includes(${JSON.stringify(optionText)}));
+      const deadline = Date.now() + 5000;
+      let trigger = null;
+      while (Date.now() < deadline) {
+        const label = [...document.querySelectorAll("label")].find((el) => el.textContent === "운동 종목");
+        trigger = label?.nextElementSibling?.querySelector("button");
+        if (trigger) break;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+      if (!trigger) throw new Error("exercise dropdown trigger not found");
+      trigger.click();
+
+      let option = null;
+      while (Date.now() < deadline) {
+        option = [...document.querySelectorAll("button")].find((el) => el.innerText.includes(${JSON.stringify(optionText)}));
+        if (option) break;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
       if (!option) throw new Error("exercise option not found: ${optionText}");
       option.click();
     })()
@@ -334,6 +349,14 @@ try {
   await waitForText(client, "최근 해석");
   await sleep(400);
   await screenshot(client, "screenshot-analytics.png");
+
+  // Desktop web layout (same fixture data, wider viewport): shows the horizontal nav and
+  // multi-column grid that the mobile captures above don't demonstrate.
+  await client.send("Emulation.setDeviceMetricsOverride", DESKTOP_VIEWPORT);
+  await client.send("Page.navigate", { url: `${APP_URL}/dashboard?skipSplash` });
+  await waitForText(client, "최근 4주");
+  await sleep(400);
+  await screenshot(client, "screenshot-dashboard-web.png");
 
   console.log("done");
 } finally {

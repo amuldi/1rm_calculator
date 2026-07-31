@@ -29,27 +29,28 @@
 
 ### 대시보드
 
-최근 1RM, 주간 볼륨, 총 볼륨, 오늘의 칼로리/단백질 게이지, 운동+영양을 합친 오늘의 컨디션 요약, 목표 진행률을 확인합니다. 첫 방문자는 `1RM 계산 -> 세션 기록 -> 목표 설정` 순서로 시작할 수 있습니다.
+최근 1RM, 주간 볼륨, 총 볼륨, 오늘의 칼로리/단백질 게이지, 운동+영양을 합친 오늘의 컨디션 요약, 목표 진행률을 확인합니다. 첫 방문자는 `1RM 계산 -> 세션 기록 -> 목표 설정` 순서로 시작할 수 있습니다. 모바일 PWA와 데스크톱 웹 양쪽에서 같은 정보를 반응형 레이아웃으로 보여줍니다.
 
-![대시보드 실행 화면](docs/images/screenshot-dashboard.png)
+<img src="docs/images/screenshot-dashboard.png" alt="대시보드 모바일 실행 화면" width="260" />
+<img src="docs/images/screenshot-dashboard-web.png" alt="대시보드 데스크톱 웹페이지 화면" width="480" />
 
 ### 1RM 계산기
 
 운동 종목, 무게, 반복 횟수, 세트 수, RPE, 날짜, 메모를 입력합니다. 앱이 종목별 추천 공식을 자동 적용하고, 추정 신뢰도와 예상 범위를 함께 표시합니다.
 
-![1RM 계산기 실행 화면](docs/images/screenshot-calculator.png)
+<img src="docs/images/screenshot-calculator.png" alt="1RM 계산기 실행 화면" width="260" />
 
 ### 영양 기록
 
 끼니별로 칼로리/단백질/탄수화물/지방을 기록하고 즐겨찾기로 자주 먹는 음식을 재사용합니다. 체중, 활동 수준, 목표 모드(증량/유지/감량)를 입력하면 BMR/TDEE 기반으로 칼로리·단백질 목표를 자동 계산하고, 오늘 섭취량 대비 달성률을 보여줍니다.
 
-![영양 기록 실행 화면](docs/images/screenshot-nutrition.png)
+<img src="docs/images/screenshot-nutrition.png" alt="영양 기록 실행 화면" width="260" />
 
 ### 분석
 
 기간별 세션 수, 총 볼륨, 평균 1RM, PR 후보, RPE 기반 강도 해석, 종목별 흐름, 주간 영양 섭취 추이를 확인합니다. 기록이 없을 때는 계산기로 이동하는 CTA를 제공합니다.
 
-![분석 실행 화면](docs/images/screenshot-analytics.png)
+<img src="docs/images/screenshot-analytics.png" alt="분석 실행 화면" width="260" />
 
 ## 핵심 기능
 
@@ -294,7 +295,17 @@ npm run qa:browser
 
 ## 시스템 아키텍처
 
-![시스템 아키텍처](docs/images/system-architecture.svg)
+```mermaid
+flowchart LR
+    Browser["사용자 브라우저\n모바일/데스크톱"] --> App
+    App["React SPA + Vite + PWA\nDashboard · Calculator · Nutrition · Profile"] --> Hosting["정적 호스팅\nFirebase Hosting / Vercel"]
+    App --> Store["Zustand Stores\nworkoutStore · goalStore · nutritionStore · uiStore"]
+    Store --> Domain["계산 엔진과 유틸\n1RM 공식 · 목표 진행률 · BMR/TDEE 영양 목표"]
+    Domain --> Persist["Browser LocalStorage\n회원가입 없이 로컬 저장, JSON 백업/복원"]
+    Persist -. "동기화 버튼(선택)" .-> Firebase["Firebase Auth / Firestore Lite"]
+```
+
+자세한 데이터 흐름(입력→저장→동기화, 삭제)과 모듈 의존 관계는 [시스템 아키텍처와 데이터 흐름](docs/architecture.md) 문서를 참고하세요.
 
 ## 프로젝트 구조
 
