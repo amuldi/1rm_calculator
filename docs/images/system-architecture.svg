@@ -75,18 +75,20 @@
       <rect x="160" y="580" width="365" height="235" rx="26" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
       <text x="192" y="631" class="label">STATE LAYER</text>
       <text x="192" y="669" class="boxTitle">Zustand Stores</text>
-      <text x="192" y="710" class="item">workoutStore · 운동 기록</text>
-      <text x="192" y="742" class="item">goalStore · 목표 1RM</text>
-      <text x="192" y="774" class="item">uiStore · 단위/테마</text>
+      <text x="192" y="702" class="item">workoutStore · 운동 기록</text>
+      <text x="192" y="728" class="item">goalStore · 목표 1RM</text>
+      <text x="192" y="754" class="item">nutritionStore · 식사/영양 목표</text>
+      <text x="192" y="780" class="item">uiStore · 단위/테마</text>
     </g>
 
     <g filter="url(#shadow)">
       <rect x="620" y="580" width="360" height="235" rx="26" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
       <text x="652" y="631" class="label">DOMAIN LOGIC</text>
       <text x="652" y="669" class="boxTitle">계산 엔진과 유틸</text>
-      <text x="652" y="710" class="item">종목별 1RM 공식 자동 선택</text>
-      <text x="652" y="742" class="item">목표 진행률과 PR 계산</text>
-      <text x="652" y="774" class="item">kg/lb 변환과 기록 정규화</text>
+      <text x="652" y="702" class="item">종목별 1RM 공식 자동 선택</text>
+      <text x="652" y="728" class="item">목표 진행률과 PR 계산</text>
+      <text x="652" y="754" class="item">BMR/TDEE 기반 영양 목표 계산</text>
+      <text x="652" y="780" class="item">kg/lb 변환과 기록 정규화</text>
     </g>
 
     <g filter="url(#shadow)">

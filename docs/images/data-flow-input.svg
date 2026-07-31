@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="430" viewBox="0 0 1500 430" fill="none">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#1f2a22" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#00a8d8"/>
+    </marker>
+    <style>
+      .font { font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+      .step { font-size: 21px; font-weight: 850; fill: #111713; }
+      .sub { font-size: 15px; font-weight: 650; fill: #546158; }
+      .num { font-size: 19px; font-weight: 900; fill: #00a8d8; }
+      .tag { font-size: 13px; font-weight: 800; fill: #007dbe; letter-spacing: .4px; }
+    </style>
+  </defs>
+
+  <rect width="1500" height="430" fill="#f8fbff"/>
+
+  <g class="font">
+    <!-- Row 1: steps 1-3 -->
+    <g filter="url(#shadow)">
+      <rect x="40" y="40" width="270" height="140" rx="20" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
+      <circle cx="76" cy="76" r="20" fill="#eaf9ff"/>
+      <text x="68" y="83" class="num">1</text>
+      <text x="110" y="72" class="tag">INPUT</text>
+      <text x="66" y="120" class="step">사용자 입력</text>
+      <text x="66" y="148" class="sub">운동 기록 / 영양 기록 폼 제출</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="365" y="40" width="270" height="140" rx="20" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
+      <circle cx="401" cy="76" r="20" fill="#eaf9ff"/>
+      <text x="393" y="83" class="num">2</text>
+      <text x="435" y="72" class="tag">NORMALIZE</text>
+      <text x="391" y="120" class="step">정규화</text>
+      <text x="391" y="148" class="sub">normalize* 함수로 형식 통일</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="690" y="40" width="270" height="140" rx="20" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
+      <circle cx="726" cy="76" r="20" fill="#eaf9ff"/>
+      <text x="718" y="83" class="num">3</text>
+      <text x="760" y="72" class="tag">STATE</text>
+      <text x="716" y="120" class="step">Zustand persist</text>
+      <text x="716" y="148" class="sub">createdAt/updatedAt/syncVersion 부여</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="1015" y="40" width="270" height="140" rx="20" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
+      <circle cx="1051" cy="76" r="20" fill="#eaf9ff"/>
+      <text x="1043" y="83" class="num">4</text>
+      <text x="1085" y="72" class="tag">PERSIST</text>
+      <text x="1041" y="120" class="step">localStorage</text>
+      <text x="1041" y="148" class="sub">오프라인에서도 즉시 저장</text>
+    </g>
+
+    <line x1="310" y1="110" x2="360" y2="110" stroke="#00a8d8" stroke-width="3.5" marker-end="url(#arrow)"/>
+    <line x1="635" y1="110" x2="685" y2="110" stroke="#00a8d8" stroke-width="3.5" marker-end="url(#arrow)"/>
+    <line x1="960" y1="110" x2="1010" y2="110" stroke="#00a8d8" stroke-width="3.5" marker-end="url(#arrow)"/>
+
+    <line x1="1150" y1="180" x2="1150" y2="235" stroke="#00a8d8" stroke-width="3.5"/>
+    <line x1="1150" y1="235" x2="360" y2="235" stroke="#00a8d8" stroke-width="3.5"/>
+    <line x1="360" y1="235" x2="360" y2="275" stroke="#00a8d8" stroke-width="3.5" marker-end="url(#arrow)"/>
+
+    <!-- Row 2: steps 5-6, only when Firebase is configured -->
+    <g filter="url(#shadow)">
+      <rect x="225" y="280" width="330" height="140" rx="20" fill="#fffefa" stroke="rgba(0,168,216,.28)" stroke-dasharray="6 6"/>
+      <circle cx="261" cy="316" r="20" fill="#eaf9ff"/>
+      <text x="253" y="323" class="num">5</text>
+      <text x="295" y="312" class="tag">SYNC (선택)</text>
+      <text x="251" y="360" class="step">syncService 병합</text>
+      <text x="251" y="388" class="sub">로컬/원격 비교 후 updatedAt 최신값 채택</text>
+    </g>
+
+    <line x1="555" y1="350" x2="605" y2="350" stroke="#00a8d8" stroke-width="3.5" marker-end="url(#arrow)"/>
+
+    <g filter="url(#shadow)">
+      <rect x="610" y="280" width="330" height="140" rx="20" fill="#fffefa" stroke="rgba(0,168,216,.28)" stroke-dasharray="6 6"/>
+      <circle cx="646" cy="316" r="20" fill="#eaf9ff"/>
+      <text x="638" y="323" class="num">6</text>
+      <text x="680" y="312" class="tag">REMOTE</text>
+      <text x="636" y="360" class="step">Firestore 반영</text>
+      <text x="636" y="388" class="sub">병합 결과를 원격/로컬 양쪽에 동일하게 저장</text>
+    </g>
+  </g>
+</svg>

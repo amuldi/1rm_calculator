@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="200" viewBox="0 0 1500 200" fill="none">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#1f2a22" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f0793b"/>
+    </marker>
+    <style>
+      .font { font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+      .step { font-size: 20px; font-weight: 850; fill: #111713; }
+      .sub { font-size: 14px; font-weight: 650; fill: #546158; }
+      .num { font-size: 18px; font-weight: 900; fill: #e07c2e; }
+      .tag { font-size: 12px; font-weight: 800; fill: #b45f14; letter-spacing: .4px; }
+    </style>
+  </defs>
+
+  <rect width="1500" height="200" fill="#f8fbff"/>
+
+  <g class="font">
+    <g filter="url(#shadow)">
+      <rect x="20" y="20" width="260" height="150" rx="20" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
+      <circle cx="54" cy="56" r="19" fill="#fff4ea"/>
+      <text x="47" y="63" class="num">1</text>
+      <text x="86" y="52" class="tag">DELETE REQUEST</text>
+      <text x="44" y="100" class="step">삭제 요청</text>
+      <text x="44" y="126" class="sub">기록 목록에서 삭제 버튼 클릭</text>
+    </g>
+
+    <line x1="280" y1="95" x2="320" y2="95" stroke="#f0793b" stroke-width="3.5" marker-end="url(#arrow)"/>
+
+    <g filter="url(#shadow)">
+      <rect x="325" y="20" width="290" height="150" rx="20" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
+      <circle cx="359" cy="56" r="19" fill="#fff4ea"/>
+      <text x="352" y="63" class="num">2</text>
+      <text x="391" y="52" class="tag">TOMBSTONE</text>
+      <text x="349" y="100" class="step">tombstone 생성</text>
+      <text x="349" y="126" class="sub">deletedRecords/deletedMeals에 id 기록</text>
+    </g>
+
+    <line x1="615" y1="95" x2="655" y2="95" stroke="#f0793b" stroke-width="3.5" marker-end="url(#arrow)"/>
+
+    <g filter="url(#shadow)">
+      <rect x="660" y="20" width="260" height="150" rx="20" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
+      <circle cx="694" cy="56" r="19" fill="#fff4ea"/>
+      <text x="687" y="63" class="num">3</text>
+      <text x="726" y="52" class="tag">LOCAL</text>
+      <text x="684" y="100" class="step">로컬 즉시 반영</text>
+      <text x="684" y="126" class="sub">목록/집계에서 즉시 제거</text>
+    </g>
+
+    <line x1="920" y1="95" x2="960" y2="95" stroke="#f0793b" stroke-width="3.5" marker-end="url(#arrow)"/>
+
+    <g filter="url(#shadow)">
+      <rect x="965" y="20" width="290" height="150" rx="20" fill="#fffefa" stroke="rgba(0,168,216,.28)" stroke-dasharray="6 6"/>
+      <circle cx="999" cy="56" r="19" fill="#eaf9ff"/>
+      <text x="991" y="63" class="num" fill="#00a8d8">4</text>
+      <text x="1031" y="52" class="tag" fill="#007dbe">SYNC (선택)</text>
+      <text x="989" y="100" class="step">원격 tombstone 병합</text>
+      <text x="989" y="126" class="sub">더 최신인 같은 id 기록이 있으면 삭제를 무시</text>
+    </g>
+
+    <line x1="1255" y1="95" x2="1295" y2="95" stroke="#f0793b" stroke-width="3.5" marker-end="url(#arrow)"/>
+
+    <g filter="url(#shadow)">
+      <rect x="1300" y="20" width="180" height="150" rx="20" fill="#fffefa" stroke="rgba(17,23,19,.08)"/>
+      <circle cx="1334" cy="56" r="19" fill="#fff4ea"/>
+      <text x="1327" y="63" class="num">5</text>
+      <text x="1366" y="52" class="tag">PRUNE</text>
+      <text x="1324" y="100" class="step">tombstone 정리</text>
+      <text x="1324" y="126" class="sub">오래된 삭제 기록 제거</text>
+    </g>
+  </g>
+</svg>

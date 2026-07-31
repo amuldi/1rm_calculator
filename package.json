@@ -13,6 +13,7 @@
     "verify:performance": "node scripts/verify-performance.mjs",
     "qa:browser": "node --experimental-websocket scripts/verify-browser.mjs",
     "qa:browser:server": "QA_START_SERVER=1 node --experimental-websocket scripts/verify-browser.mjs",
+    "capture:screenshots": "node --experimental-websocket scripts/capture-screenshots.mjs",
     "check": "npm run test && npm run verify:env && npm run verify:release && npm run build && npm run verify:performance",
     "check:full": "npm run check && npm run qa:browser"
   },
